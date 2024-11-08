@@ -5,13 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material3.Text
@@ -27,6 +26,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.zadumite_frontend.ui.theme.entranceButton
 
 @Composable
 fun StartScreen (navController: NavController){
@@ -60,39 +60,30 @@ fun StartScreen (navController: NavController){
                 shape = RoundedCornerShape(50),
                 colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color(0xFFCBBA9E),contentColor = Color(0xFF4D2D18)),
                 modifier = Modifier
-                    .fillMaxWidth()
                     .padding(bottom = 16.dp)
+                    .width(277.dp)
                     .height(48.dp)
             ) {
                 Text(
                     text = "Влизане",
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        lineHeight = 30.17.sp,
-                        fontFamily = FontFamily(Font(R.font.alegreya)),
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF000000),
-                    )
+                    style = entranceButton,
                 )
             }
             OutlinedButton(
                 onClick = { navController.navigate("signup") },
                 border = BorderStroke(1.dp, Color(0xFF4D2D18)),
-                shape = RoundedCornerShape(50),
+                shape = RoundedCornerShape(size = 39.dp),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF4D2D18)),
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .width(277.dp)
                     .height(48.dp)
             ) {
                 Text(
                     text = "Регистрация",
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        lineHeight = 30.17.sp,
-                        fontFamily = FontFamily(Font(R.font.alegreya)),
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF000000),
-                    ),
+                    style = entranceButton,
+                    modifier = Modifier
+                        .width(131.dp)
+                        .height(30.dp)
                 )
             }
         }
