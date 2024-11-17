@@ -55,7 +55,7 @@ fun StartScreen (navController: NavController){
                 modifier = Modifier.padding(bottom = 32.dp)
             )
             OutlinedButton(
-                onClick = { navController.navigate("login") },
+                onClick = { navController.navigate(route = Screen.LogIn.route) },
                 border = BorderStroke(1.dp, Color(0xFF4D2D18)),
                 shape = RoundedCornerShape(50),
                 colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color(0xFFCBBA9E),contentColor = Color(0xFF4D2D18)),
@@ -70,7 +70,7 @@ fun StartScreen (navController: NavController){
                 )
             }
             OutlinedButton(
-                onClick = { navController.navigate("signup") },
+                onClick = { navController.navigate(route = Screen.SignUp.route) },
                 border = BorderStroke(1.dp, Color(0xFF4D2D18)),
                 shape = RoundedCornerShape(size = 39.dp),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF4D2D18)),
