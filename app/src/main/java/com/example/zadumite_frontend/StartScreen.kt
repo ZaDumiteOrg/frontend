@@ -14,13 +14,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.navigation.NavController
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.zadumite_frontend.navigation.Screen
 import com.example.zadumite_frontend.ui.theme.Beige
 import com.example.zadumite_frontend.ui.theme.Brown
 import com.example.zadumite_frontend.ui.theme.White
@@ -28,7 +26,8 @@ import com.example.zadumite_frontend.ui.theme.appTitle
 import com.example.zadumite_frontend.ui.theme.entranceButton
 
 @Composable
-fun StartScreen (navController: NavController){
+fun StartScreen (onNavigateToSignUp: () -> Unit,
+                 onNavigateToLogIn: () -> Unit){
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -48,7 +47,7 @@ fun StartScreen (navController: NavController){
                 modifier = Modifier.padding(bottom = 32.dp)
             )
             OutlinedButton(
-                onClick = { navController.navigate(route = Screen.LogIn.route) },
+                onClick = onNavigateToLogIn,
                 border = BorderStroke(1.dp, Brown),
                 shape = RoundedCornerShape(50),
                 colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Beige,contentColor = Brown),
@@ -63,7 +62,7 @@ fun StartScreen (navController: NavController){
                 )
             }
             OutlinedButton(
-                onClick = { navController.navigate(route = Screen.SignUp.route) },
+                onClick = onNavigateToSignUp,
                 border = BorderStroke(1.dp, Brown),
                 shape = RoundedCornerShape(size = 39.dp),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Brown),

@@ -5,5 +5,5 @@ import androidx.navigation.NavController
 
 
 @Composable
-fun LogInScreen(navController: NavController) {
+fun LogInScreen(onNavigateBack: ()-> Unit) {
 }

@@ -13,17 +13,20 @@ fun NavigationStack() {
 
     NavHost(navController = navController, startDestination = Screen.Start.route) {
         composable(route = Screen.Start.route) {
-            StartScreen(navController = navController)
+            StartScreen(
+                onNavigateToSignUp = { navController.navigate(Screen.SignUp.route) },
+                onNavigateToLogIn = { navController.navigate(Screen.LogIn.route) }
+            )
         }
         composable(
             route = Screen.SignUp.route,
         ) {
-            SignUpScreen(navController = navController)
+            SignUpScreen(onNavigateBack = { navController.popBackStack() })
         }
         composable(
             route = Screen.LogIn.route,
         ) {
-            LogInScreen(navController = navController)
+            LogInScreen(onNavigateBack = { navController.popBackStack() })
         }
     }
 }
