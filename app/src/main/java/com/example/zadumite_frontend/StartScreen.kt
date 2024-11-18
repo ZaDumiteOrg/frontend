@@ -15,17 +15,16 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.navigation.NavController
-
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.zadumite_frontend.navigation.Screen
+import com.example.zadumite_frontend.ui.theme.Beige
+import com.example.zadumite_frontend.ui.theme.Brown
+import com.example.zadumite_frontend.ui.theme.White
+import com.example.zadumite_frontend.ui.theme.appTitle
 import com.example.zadumite_frontend.ui.theme.entranceButton
 
 @Composable
@@ -33,7 +32,7 @@ fun StartScreen (navController: NavController){
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFFFFFFFF))
+            .background(color = White)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -44,42 +43,36 @@ fun StartScreen (navController: NavController){
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = "За думите",
-                style = TextStyle(
-                    fontSize = 64.sp,
-                    lineHeight = 80.45.sp,
-                    fontFamily = FontFamily(Font(R.font.alegreya)),
-                    fontWeight = FontWeight(800),
-                    color = Color(0xFF4D2D18),
-                ),
+                text = stringResource(R.string.app_title),
+                style = appTitle,
                 modifier = Modifier.padding(bottom = 32.dp)
             )
             OutlinedButton(
                 onClick = { navController.navigate(route = Screen.LogIn.route) },
-                border = BorderStroke(1.dp, Color(0xFF4D2D18)),
+                border = BorderStroke(1.dp, Brown),
                 shape = RoundedCornerShape(50),
-                colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color(0xFFCBBA9E),contentColor = Color(0xFF4D2D18)),
+                colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Beige,contentColor = Brown),
                 modifier = Modifier
                     .padding(bottom = 16.dp)
                     .width(277.dp)
                     .height(48.dp)
             ) {
                 Text(
-                    text = "Влизане",
+                    text = stringResource(R.string.login_button),
                     style = entranceButton,
                 )
             }
             OutlinedButton(
                 onClick = { navController.navigate(route = Screen.SignUp.route) },
-                border = BorderStroke(1.dp, Color(0xFF4D2D18)),
+                border = BorderStroke(1.dp, Brown),
                 shape = RoundedCornerShape(size = 39.dp),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF4D2D18)),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Brown),
                 modifier = Modifier
                     .width(277.dp)
                     .height(48.dp)
             ) {
                 Text(
-                    text = "Регистрация",
+                    text = stringResource(R.string.signup_button),
                     style = entranceButton,
                     modifier = Modifier
                         .width(131.dp)

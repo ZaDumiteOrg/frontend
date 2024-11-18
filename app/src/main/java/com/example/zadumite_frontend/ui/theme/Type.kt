@@ -26,3 +26,15 @@ val entranceButton: TextStyle
             textAlign = TextAlign.Center
         )
     }
+
+val appTitle: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 64.sp,
+                    lineHeight = 80.45.sp,
+                    fontFamily = FontFamily(Font(R.font.alegreya)),
+                    fontWeight = FontWeight(800),
+                    color = Brown,
+        )
+    }

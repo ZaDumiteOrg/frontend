@@ -1,4 +1,4 @@
-package com.example.zadumite_frontend
+package com.example.zadumite_frontend.navigation
 
 sealed class Screen(val route: String) {
     object Start: Screen("start_screen")
