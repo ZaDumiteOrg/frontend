@@ -22,7 +22,7 @@ val entranceButton: TextStyle
             lineHeight = 30.sp,
             fontFamily = AlegreyaFontFamily,
             fontWeight = FontWeight(400),
-            color = Color(0xFF000000),
+            color = Black,
             textAlign = TextAlign.Center
         )
     }

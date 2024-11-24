@@ -1,5 +1,7 @@
 package com.example.zadumite_frontend.ui.theme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import com.example.zadumite_frontend.R
 
 val White = Color(0xFFFFFFFF)
 val Brown = Color(0xFF4D2D18)

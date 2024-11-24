@@ -76,7 +76,4 @@ dependencies {
     implementation("androidx.compose.material:material:1.7.5")
     implementation("androidx.compose.ui:ui-tooling:1.7.5")
 
-    // Hilt
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 }

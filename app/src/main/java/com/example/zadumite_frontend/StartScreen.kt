@@ -26,8 +26,10 @@ import com.example.zadumite_frontend.ui.theme.appTitle
 import com.example.zadumite_frontend.ui.theme.entranceButton
 
 @Composable
-fun StartScreen (onNavigateToSignUp: () -> Unit,
-                 onNavigateToLogIn: () -> Unit){
+fun StartScreen (
+    onNavigateToSignUp: () -> Unit,
+    onNavigateToLogIn: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()

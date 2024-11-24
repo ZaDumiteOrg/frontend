@@ -5,10 +5,8 @@ plugins {
 }
 
 buildscript {
-    // ext.hilt_version = '2.40'
     dependencies {
         classpath("com.android.tools.build:gradle:8.2.2")
-        //classpath("com.google.dagger:hilt-android-gradle-plugin:$hilt_version")
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.51.1")
     }
 }
