@@ -38,3 +38,27 @@ val appTitle: TextStyle
                     color = Brown,
         )
     }
+
+val userCredentials: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 15.sp,
+            lineHeight = 18.86.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(500),
+            color = Brown,
+        )
+    }
+
+val enterText: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 16.sp,
+            lineHeight = 20.11.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(500),
+            color = Brown,
+        )
+    }
