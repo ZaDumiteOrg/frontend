@@ -4,6 +4,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.zadumite_frontend.LogInScreen
+import com.example.zadumite_frontend.MainScreen
 import com.example.zadumite_frontend.SignUpScreen
 import com.example.zadumite_frontend.StartScreen
 
@@ -21,12 +22,20 @@ fun NavigationStack() {
         composable(
             route = Screen.SignUp.route,
         ) {
-            SignUpScreen(onNavigateBack = { navController.popBackStack() })
+            SignUpScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToMain = {navController.navigate(Screen.Main.route)}
+            )
         }
         composable(
             route = Screen.LogIn.route,
         ) {
             LogInScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(
+            route = Screen.Main.route,
+        ) {
+            MainScreen(onNavigateBack = {navController.popBackStack()})
         }
     }
 }
