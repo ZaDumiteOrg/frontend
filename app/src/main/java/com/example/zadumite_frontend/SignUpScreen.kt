@@ -51,8 +51,17 @@ fun SignUpScreen(
     onNavigateBack: () -> Unit,
     onNavigateToMain: () -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var email by remember {
+        mutableStateOf("")
+    }
+
+    var password by remember {
+        mutableStateOf("")
+    }
+
+    var isValid by remember {
+        mutableStateOf(true)
+    }
 
     Box(
         modifier = Modifier
@@ -169,7 +178,12 @@ fun SignUpScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedButton(
-                    onClick = onNavigateToMain,
+                    onClick = {
+                        isValid = isValidCredentials(email, password)
+                        if (isValid) {
+                            onNavigateToMain
+                        }
+                    } ,
                     border = BorderStroke(1.dp, Brown),
                     shape = RoundedCornerShape(size = 39.dp),
                     colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Beige, contentColor = Brown),
@@ -185,4 +199,10 @@ fun SignUpScreen(
             }
         }
     }
+}
+
+private fun isValidCredentials(email: String, password: String): Boolean {
+    val emailPattern = Regex("[a-zA-Z0–9._-]+@[a-z]+\\.+[a-z]+")
+    val passwordPattern = Regex("^(?=.*[0–9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$")
+    return emailPattern.matches(email) && passwordPattern.matches(password)
 }
