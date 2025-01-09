@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -47,8 +48,11 @@ import com.example.zadumite_frontend.ui.theme.LightGray
 import com.example.zadumite_frontend.ui.theme.White
 import com.example.zadumite_frontend.ui.theme.enterText
 import com.example.zadumite_frontend.ui.theme.entranceButton
+import com.example.zadumite_frontend.ui.theme.errorMessageStyle
 import com.example.zadumite_frontend.ui.theme.userCredentials
 import org.koin.androidx.compose.koinViewModel
+import com.example.zadumite_frontend.ui.utils.isValidEmail
+import com.example.zadumite_frontend.ui.utils.isValidPassword
 
 
 @Composable
@@ -57,6 +61,7 @@ fun SignUpScreen(
     onNavigateToMain: () -> Unit,
     viewModel: SignUpViewModel = koinViewModel(),
 ) {
+
     val signUpState by viewModel.signUpState.observeAsState()
 
     var firstName by remember {
@@ -75,9 +80,11 @@ fun SignUpScreen(
         mutableStateOf("")
     }
 
-    var isValid by remember {
-        mutableStateOf(true)
+    var errorMessage by remember {
+        mutableStateOf("")
     }
+
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -271,15 +278,19 @@ fun SignUpScreen(
 
                 OutlinedButton(
                     onClick = {
-                        isValid = isValidCredentials(email, password)
-                        if (isValid) {
-                            println("Valid credentials, signing up user...")
-                            val user = SignUpRequest(firstName, lastName, email, password)
-                            viewModel.signUp(user)
-                            onNavigateToMain()
-                        }
-                        else {
-                            println("Invalid credentials")
+                        when {
+                            !isValidEmail(email) -> {
+                                errorMessage = context.getString(R.string.invalid_email)
+                            }
+                            !isValidPassword(password) -> {
+                                errorMessage = context.getString(R.string.invalid_password)
+                            }
+                            else -> {
+                                errorMessage = ""
+                                val user = SignUpRequest(firstName, lastName, email, password)
+                                viewModel.signUp(user)
+                                onNavigateToMain()
+                            }
                         }
                     } ,
                     border = BorderStroke(1.dp, Brown),
@@ -294,13 +305,13 @@ fun SignUpScreen(
                         style = entranceButton
                     )
                 }
+                if (errorMessage.isNotEmpty()) {
+                    Text(
+                        text = errorMessage,
+                        style = errorMessageStyle
+                    )
+                }
             }
         }
     }
-}
-
-private fun isValidCredentials(email: String, password: String): Boolean {
-    val emailPattern = Regex("^[a-zA-Z0-9._-]+@[a-zA-Z]+\\.[a-zA-Z]{2,}$")
-    val passwordPattern = Regex("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$")
-    return emailPattern.matches(email) && passwordPattern.matches(password)
 }
