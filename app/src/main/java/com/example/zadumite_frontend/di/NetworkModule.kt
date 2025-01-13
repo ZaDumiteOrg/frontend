@@ -1,43 +1,36 @@
 package com.example.zadumite_frontend.di
 
+import com.example.zadumite_frontend.di.providers.provideAccessOkHttpClient
+import com.example.zadumite_frontend.di.providers.provideRefreshOkHttpClient
+import com.example.zadumite_frontend.di.providers.provideRetrofit
+import com.example.zadumite_frontend.di.qualifiers.AUTHENTICATED_CLIENT
+import com.example.zadumite_frontend.di.qualifiers.TOKEN_REFRESH_CLIENT
 import com.example.zadumite_frontend.network.ZaDumiteApiService
-import com.example.zadumite_frontend.network.authenticator.AuthAuthenticator
-import com.example.zadumite_frontend.network.interception.AccessTokenInterceptor
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 
 
 val networkModule = module {
-    single {
-        println("Creating OkHttpClient...")
-        OkHttpClient.Builder()
-            .addInterceptor(get<AccessTokenInterceptor>())
-            .authenticator(get<AuthAuthenticator>())
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            })
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
+    single(AUTHENTICATED_CLIENT) {
+        println("Initializing AuthenticatedClient...") // remove ts
+        provideAccessOkHttpClient(get(), get())
     }
 
-    single {
-        println("Creating Retrofit instance...")
-        Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:3000/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(get<OkHttpClient>())
-            .build()
+    single(TOKEN_REFRESH_CLIENT) {
+        provideRefreshOkHttpClient(get())
     }
 
-    single {
-        println("Creating ZaDumiteApiService...")
+    single<Retrofit> {
+        provideRetrofit(get(AUTHENTICATED_CLIENT))
+    }
+
+    single(named("RefreshRetrofit")) {
+        provideRetrofit(get(TOKEN_REFRESH_CLIENT))
+    }
+
+    single<ZaDumiteApiService> {
         get<Retrofit>().create(ZaDumiteApiService::class.java)
     }
-}
 
+}
