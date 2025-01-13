@@ -4,5 +4,5 @@ import com.example.zadumite_frontend.data.repository.AuthRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single { AuthRepository(get()) }
+    single { AuthRepository(get(), get()) }
 }
