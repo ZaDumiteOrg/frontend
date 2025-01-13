@@ -1,5 +1,6 @@
 package com.example.zadumite_frontend.ui.login
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
@@ -26,7 +28,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -50,12 +54,14 @@ import com.example.zadumite_frontend.ui.theme.errorMessageStyle
 import com.example.zadumite_frontend.ui.theme.userCredentials
 import com.example.zadumite_frontend.ui.utils.isValidEmail
 import com.example.zadumite_frontend.ui.utils.isValidPassword
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun LogInScreen(
     onNavigateBack: ()-> Unit,
-    onNavigateToMain: ()-> Unit
+    onNavigateToMain: ()-> Unit,
+    viewModel: LogInViewModel = koinViewModel()
 ) {
     var email by remember {
         mutableStateOf("")
@@ -70,6 +76,23 @@ fun LogInScreen(
     }
 
     val context = LocalContext.current
+
+    val loginResult by viewModel.loginResult.observeAsState()
+    val isLoading by viewModel.isLoading.observeAsState(initial = false)
+
+    LaunchedEffect(loginResult) {
+        loginResult?.let { result ->
+            result.fold(
+                onSuccess = {
+                    Toast.makeText(context, "Login Successful!", Toast.LENGTH_SHORT).show()
+                    onNavigateToMain()
+                },
+                onFailure = { exception ->
+                    errorMessage = exception.message ?: context.getString(R.string.login_failed)
+                }
+            )
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -197,6 +220,7 @@ fun LogInScreen(
                             }
                             else -> {
                                 errorMessage = ""
+                                viewModel.logIn(email, password)
                                 onNavigateToMain()
                             }
                         }
@@ -222,7 +246,9 @@ fun LogInScreen(
                         style = errorMessageStyle
                     )
                 }
-
+                if (isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.padding(top = 16.dp))
+                }
             }
         }
     }
