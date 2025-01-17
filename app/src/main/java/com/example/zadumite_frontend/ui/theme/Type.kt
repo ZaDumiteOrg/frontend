@@ -71,3 +71,63 @@ val errorMessageStyle: TextStyle
             color = Red,
         )
     }
+
+val scaffoldTitle: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 28.sp,
+            lineHeight = 35.2.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(800),
+            color = Brown,
+            )
+    }
+
+val wordOfTheWeekHeader: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 24.sp,
+            lineHeight = 30.17.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(800),
+            color = LightBrown,
+            )
+    }
+
+val wordOfTheWeek: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 40.sp,
+            lineHeight = 50.28.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(800),
+            color = Brown,
+            )
+    }
+
+val wordDescription: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 20.sp,
+            lineHeight = 25.14.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(400),
+            color = LightBrown,
+        )
+    }
+
+val wordExample: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 20.sp,
+            lineHeight = 25.14.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(500),
+            color = Brown,
+        )
+    }
