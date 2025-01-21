@@ -131,3 +131,27 @@ val wordExample: TextStyle
             color = Brown,
         )
     }
+
+val usersWord: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 16.sp,
+            lineHeight = 20.11.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(500),
+            color = Brown,
+        )
+    }
+
+val usersWordExample: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 14.sp,
+            lineHeight = 17.6.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(400),
+            color = Brown,
+        )
+    }
