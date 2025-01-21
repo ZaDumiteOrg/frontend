@@ -11,24 +11,33 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.example.zadumite_frontend.R
+import com.example.zadumite_frontend.navigation.Screen
 import com.example.zadumite_frontend.ui.theme.Beige
 import com.example.zadumite_frontend.ui.theme.Brown
 
 @Composable
-fun BottomNavigationBar() {
+fun BottomNavigationBar(
+    onNavigateToWords: () -> Unit,
+    onNavigateToHome: () -> Unit,
+    currentRoute: String?
+) {
     BottomNavigation(
         backgroundColor = Beige,
         contentColor = Brown
     ) {
         BottomNavigationItem(
-            selected = false,
-            onClick = { println("Clicked word list") },
+            selected = currentRoute?.startsWith("user_words_screen") == true,
+            onClick = {
+                onNavigateToWords()
+            },
             icon = { Icon(Icons.Default.List, contentDescription = "Words") },
             label = { Text(text = stringResource(R.string.words)) }
         )
         BottomNavigationItem(
-            selected = true,
-            onClick = { println("Clicked Home") },
+            selected = currentRoute == Screen.Word.route,
+            onClick = {
+                onNavigateToHome()
+            },
             icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
         )
         BottomNavigationItem(
