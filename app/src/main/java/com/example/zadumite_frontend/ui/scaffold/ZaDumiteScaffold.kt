@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.zadumite_frontend.R
+import com.example.zadumite_frontend.navigation.Screen
 import com.example.zadumite_frontend.ui.bottom_bar.BottomNavigationBar
 import com.example.zadumite_frontend.ui.theme.Beige
 import com.example.zadumite_frontend.ui.theme.Brown
@@ -20,10 +21,14 @@ import com.example.zadumite_frontend.ui.theme.scaffoldTitle
 
 @Composable
 fun ZaDumiteScaffold(
+    currentRoute: String?,
+    onNavigateToWords: () -> Unit,
+    onNavigateToHome: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
     val context = LocalContext.current
     val title = context.getString(R.string.app_title)
+
 
     Scaffold(
         topBar = {
@@ -46,7 +51,13 @@ fun ZaDumiteScaffold(
             }
         },
         bottomBar = {
-            BottomNavigationBar()
+            if (currentRoute in listOf(Screen.Word.route, Screen.UserWords.route)) {
+                BottomNavigationBar(
+                    currentRoute = currentRoute,
+                    onNavigateToWords = onNavigateToWords,
+                    onNavigateToHome = onNavigateToHome
+                )
+            }
         }
     ) { innerPadding ->
         content(innerPadding)
