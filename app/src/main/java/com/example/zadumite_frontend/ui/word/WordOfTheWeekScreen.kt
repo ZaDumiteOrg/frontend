@@ -9,16 +9,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
 import com.example.zadumite_frontend.R
+import com.example.zadumite_frontend.navigation.Screen
+import com.example.zadumite_frontend.session.SessionViewModel
 import com.example.zadumite_frontend.ui.scaffold.ZaDumiteScaffold
 import com.example.zadumite_frontend.ui.theme.errorMessageStyle
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun WordOfTheWeekScreen(
-    viewModel: WordViewModel = koinViewModel()
+    navController: NavController,
+    viewModel: WordViewModel = koinViewModel(),
+    sessionViewModel: SessionViewModel = koinViewModel()
 ) {
-    ZaDumiteScaffold {
+    ZaDumiteScaffold(
+        currentRoute = Screen.Word.route,
+        onNavigateToWords = {},
+        onNavigateToHome = {}
+    ) {
         val word = viewModel.wordOfTheWeek.value
         val loading = viewModel.loading.value
 
