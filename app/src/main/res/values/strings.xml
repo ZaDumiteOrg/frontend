@@ -22,4 +22,5 @@
     <string name="word_example">Примерно изречение</string>
     <string name="words">Думи</string>
     <string name="profile">Профил</string>
+    <string name="no_words_error">Няма намерени думи</string>
 </resources>
