@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.zadumite_frontend.MainActivity
 import com.example.zadumite_frontend.R
 import com.example.zadumite_frontend.session.SessionViewModel
 import com.example.zadumite_frontend.ui.theme.Beige
@@ -230,6 +231,7 @@ fun LogInScreen(
                                         sessionViewModel.setUserId(userId)
                                         println("User id from login: $userId")
                                         onNavigateToWordScreen()
+                                        (context as? MainActivity)?.requestNotificationPermission()
                                     } else {
                                         Log.e("Login", "Failed to retrieve user ID")
                                         errorMessage = context.getString(R.string.login_failed)
