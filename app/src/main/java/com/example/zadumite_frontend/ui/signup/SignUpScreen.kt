@@ -1,5 +1,6 @@
 package com.example.zadumite_frontend.ui.signup
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,12 +36,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.zadumite_frontend.R
 import com.example.zadumite_frontend.data.model.user.SignUpRequest
+import com.example.zadumite_frontend.session.SessionViewModel
 import com.example.zadumite_frontend.ui.theme.Beige
 import com.example.zadumite_frontend.ui.theme.Brown
 import com.example.zadumite_frontend.ui.theme.LightBrown
@@ -48,15 +52,18 @@ import com.example.zadumite_frontend.ui.theme.White
 import com.example.zadumite_frontend.ui.theme.enterText
 import com.example.zadumite_frontend.ui.theme.entranceButton
 import com.example.zadumite_frontend.ui.theme.userCredentials
+import com.example.zadumite_frontend.utils.validation.isValidEmail
+import com.example.zadumite_frontend.utils.validation.isValidPassword
 import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun SignUpScreen(
     onNavigateBack: () -> Unit,
-    onNavigateToMain: () -> Unit,
+    onNavigateToWordScreen: () -> Unit,
     viewModel: SignUpViewModel = koinViewModel(),
 ) {
+    val sessionViewModel: SessionViewModel = koinViewModel()
     val signUpState by viewModel.signUpState.observeAsState()
 
     var firstName by remember {
@@ -75,9 +82,12 @@ fun SignUpScreen(
         mutableStateOf("")
     }
 
-    var isValid by remember {
-        mutableStateOf(true)
+    var errorMessage by remember {
+        mutableStateOf("")
     }
+
+    val context = LocalContext.current
+    val isLoading by viewModel.isLoading.observeAsState(initial = false)
 
     Box(
         modifier = Modifier
@@ -271,15 +281,28 @@ fun SignUpScreen(
 
                 OutlinedButton(
                     onClick = {
-                        isValid = isValidCredentials(email, password)
-                        if (isValid) {
-                            println("Valid credentials, signing up user...")
-                            val user = SignUpRequest(firstName, lastName, email, password)
-                            viewModel.signUp(user)
-                            onNavigateToMain()
-                        }
-                        else {
-                            println("Invalid credentials")
+                        when {
+                            !isValidEmail(email) -> {
+                                errorMessage = context.getString(R.string.invalid_email)
+                            }
+                            !isValidPassword(password) -> {
+                                errorMessage = context.getString(R.string.invalid_password)
+                            }
+                            else -> {
+                                errorMessage = ""
+                                val user = SignUpRequest(firstName, lastName, email, password)
+                                viewModel.signUp(user) { userId ->
+                                    if (userId != null) {
+                                        Log.d("SignUp", "Setting User ID in SessionViewModel: $userId")
+                                        sessionViewModel.setUserId(userId)
+                                        println("User id from sign-up: $userId")
+                                        onNavigateToWordScreen()
+                                    } else {
+                                        Log.e("SignUp", "Failed to retrieve user ID")
+                                        errorMessage = context.getString(R.string.signup_failed)
+                                    }
+                                }
+                            }
                         }
                     } ,
                     border = BorderStroke(1.dp, Brown),
@@ -294,13 +317,15 @@ fun SignUpScreen(
                         style = entranceButton
                     )
                 }
+
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        color = LightBrown,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+                }
             }
         }
     }
 }
 
-private fun isValidCredentials(email: String, password: String): Boolean {
-    val emailPattern = Regex("^[a-zA-Z0-9._-]+@[a-zA-Z]+\\.[a-zA-Z]{2,}$")
-    val passwordPattern = Regex("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$")
-    return emailPattern.matches(email) && passwordPattern.matches(password)
-}

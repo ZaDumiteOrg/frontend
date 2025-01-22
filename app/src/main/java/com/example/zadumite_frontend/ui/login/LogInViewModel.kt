@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.zadumite_frontend.data.model.token.TokenResponse
 import com.example.zadumite_frontend.data.model.user.LogInRequest
+import com.example.zadumite_frontend.utils.token.TokenUtils
 import kotlinx.coroutines.launch
 
 class LogInViewModel(private val repository: AuthRepository): ViewModel() {
@@ -24,7 +25,7 @@ class LogInViewModel(private val repository: AuthRepository): ViewModel() {
                 val loginRequest = LogInRequest(email, password)
                 val tokenResponse = repository.logIn(loginRequest)
 
-                val userId = decodeUserIdFromToken(tokenResponse.accessToken)
+                val userId = TokenUtils.decodeUserIdFromToken(tokenResponse.accessToken)
 
                 if (userId != null) {
                     _loginResult.postValue(Result.success(tokenResponse))
@@ -41,27 +42,4 @@ class LogInViewModel(private val repository: AuthRepository): ViewModel() {
             }
         }
     }
-
-    private fun decodeUserIdFromToken(token: String): Int? {
-        return try {
-            val parts = token.split(".")
-            if (parts.size == 3) {
-                val payload = parts[1]
-                val paddedPayload = when (payload.length % 4) {
-                    2 -> "$payload=="
-                    3 -> "$payload="
-                    else -> payload
-                }
-                val decodedPayload = String(android.util.Base64.decode(paddedPayload, android.util.Base64.URL_SAFE or android.util.Base64.NO_WRAP))
-                val json = org.json.JSONObject(decodedPayload)
-                json.optInt("sub", -1).takeIf { it != -1 }
-            } else {
-                null
-            }
-        } catch (e: Exception) {
-            Log.e("TokenDecode", "Failed to decode token: ${e.message}")
-            null
-        }
-    }
-
 }
