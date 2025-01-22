@@ -64,10 +64,10 @@ fun NavigationStack(sessionViewModel: SessionViewModel = koinViewModel()) {
                         }
                     }
                 ) {
-                    WordOfTheWeekScreen(navController)
+                    WordOfTheWeekScreen()
                 }
             } else {
-                WordOfTheWeekScreen(navController)
+                WordOfTheWeekScreen()
             }
         }
         composable(
