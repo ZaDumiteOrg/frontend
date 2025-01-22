@@ -7,18 +7,38 @@ import androidx.lifecycle.viewModelScope
 import com.example.zadumite_frontend.data.model.user.SignUpRequest
 import com.example.zadumite_frontend.data.model.user.SignUpResponse
 import com.example.zadumite_frontend.data.repository.AuthRepository
+import com.example.zadumite_frontend.utils.token.TokenUtils
 import kotlinx.coroutines.launch
 
 class SignUpViewModel(private val repository: AuthRepository) : ViewModel() {
     private val _signUpState = MutableLiveData<Result<SignUpResponse>>()
     val signUpState: LiveData<Result<SignUpResponse>> get() = _signUpState
-    fun signUp(request: SignUpRequest) {
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
+    fun signUp(request: SignUpRequest, onResult: (Int?) -> Unit) {
+        _isLoading.postValue(true)
         viewModelScope.launch {
             try {
                 val response = repository.signUp(request)
-                _signUpState.value = Result.success(response)
+
+                val userId = response.accessToken.let { token ->
+                    TokenUtils.decodeUserIdFromToken(token)
+                }
+
+                if (userId != null) {
+                    _signUpState.postValue(Result.success(response))
+                } else {
+                    _signUpState.postValue(Result.failure(Exception("Failed to decode user ID")))
+                }
+
+                onResult(userId)
             } catch (e: Exception) {
-                _signUpState.value = Result.failure(e)
+                _signUpState.postValue(Result.failure(e))
+                onResult(null)
+            } finally {
+                _isLoading.postValue(false)
             }
         }
     }
