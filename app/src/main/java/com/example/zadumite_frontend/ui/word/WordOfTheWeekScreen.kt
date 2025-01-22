@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.example.zadumite_frontend.R
 import com.example.zadumite_frontend.ui.scaffold.ZaDumiteScaffold
 import com.example.zadumite_frontend.ui.theme.errorMessageStyle
@@ -18,28 +19,27 @@ import org.koin.androidx.compose.koinViewModel
 fun WordOfTheWeekScreen(
     viewModel: WordViewModel = koinViewModel()
 ) {
-    ZaDumiteScaffold {
-        val word = viewModel.wordOfTheWeek.value
-        val loading = viewModel.loading.value
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
-            contentAlignment = Alignment.Center
-        ) {
-            when {
-                loading -> {
-                    CircularProgressIndicator()
-                }
-                word != null -> {
-                    WordCard(word = word)
-                }
-                else -> {
-                    Text(
-                        text = stringResource(R.string.fetching_word_failed),
-                        style = errorMessageStyle)
-                }
+    val word = viewModel.wordOfTheWeek.value
+    val loading = viewModel.loading.value
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        when {
+            loading -> {
+                CircularProgressIndicator()
+            }
+            word != null -> {
+                WordCard(word = word)
+            }
+            else -> {
+                Text(
+                    text = stringResource(R.string.fetching_word_failed),
+                    style = errorMessageStyle)
             }
         }
     }
