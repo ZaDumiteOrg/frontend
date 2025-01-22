@@ -15,6 +15,7 @@
     <string name="invalid_email">Невалиден имейл</string>
     <string name="invalid_password">Паролата трябва да е дълга поне 8 символа, да съдържа главна буква, малка буква и число.</string>
     <string name="login_failed">Неуспешно влизане</string>
+    <string name="signup_failed">Неуспешна регистрация</string>
     <string name="fetching_word_failed">Неуспешно извличане на дума</string>
     <string name="login_successful">Успешен вход</string>
     <string name="word_of_week">Дума на седмицата</string>
