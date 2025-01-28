@@ -1,4 +1,4 @@
-package com.example.zadumite_frontend
+package com.example.zadumite_frontend.ui.login
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -33,10 +33,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.zadumite_frontend.R
 import com.example.zadumite_frontend.ui.theme.Beige
 import com.example.zadumite_frontend.ui.theme.Brown
 import com.example.zadumite_frontend.ui.theme.LightBrown
@@ -44,12 +46,16 @@ import com.example.zadumite_frontend.ui.theme.LightGray
 import com.example.zadumite_frontend.ui.theme.White
 import com.example.zadumite_frontend.ui.theme.enterText
 import com.example.zadumite_frontend.ui.theme.entranceButton
+import com.example.zadumite_frontend.ui.theme.errorMessageStyle
 import com.example.zadumite_frontend.ui.theme.userCredentials
+import com.example.zadumite_frontend.ui.utils.isValidEmail
+import com.example.zadumite_frontend.ui.utils.isValidPassword
+
 
 @Composable
-fun SignUpScreen(
-    onNavigateBack: () -> Unit,
-    onNavigateToMain: () -> Unit
+fun LogInScreen(
+    onNavigateBack: ()-> Unit,
+    onNavigateToMain: ()-> Unit
 ) {
     var email by remember {
         mutableStateOf("")
@@ -59,9 +65,11 @@ fun SignUpScreen(
         mutableStateOf("")
     }
 
-    var isValid by remember {
-        mutableStateOf(true)
+    var errorMessage by remember {
+        mutableStateOf("")
     }
+
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -87,7 +95,6 @@ fun SignUpScreen(
                     )
                 }
             }
-
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -118,8 +125,9 @@ fun SignUpScreen(
                             modifier = Modifier
                                 .alpha(0.41f)
                                 .width(139.dp)
-                                .height(20.dp))
-                            },
+                                .height(20.dp)
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(55.dp),
@@ -155,11 +163,12 @@ fun SignUpScreen(
                         Text(
                             text = stringResource(R.string.example_password),
                             style = enterText,
-                            modifier =  Modifier
+                            modifier = Modifier
                                 .alpha(0.41f)
                                 .width(139.dp)
-                                .height(20.dp))
-                            },
+                                .height(20.dp)
+                        )
+                    },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     modifier = Modifier
@@ -179,30 +188,43 @@ fun SignUpScreen(
 
                 OutlinedButton(
                     onClick = {
-                        isValid = isValidCredentials(email, password)
-                        if (isValid) {
-                            onNavigateToMain
+                        when {
+                            !isValidEmail(email) -> {
+                                errorMessage = context.getString(R.string.invalid_email)
+                            }
+                            !isValidPassword(password) -> {
+                                errorMessage = context.getString(R.string.invalid_password)
+                            }
+                            else -> {
+                                errorMessage = ""
+                                onNavigateToMain()
+                            }
                         }
                     } ,
                     border = BorderStroke(1.dp, Brown),
                     shape = RoundedCornerShape(size = 39.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Beige, contentColor = Brown),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        backgroundColor = Beige,
+                        contentColor = Brown
+                    ),
                     modifier = Modifier
                         .width(277.dp)
                         .height(48.dp)
                 ) {
                     Text(
-                        text = stringResource(R.string.signup),
+                        text = stringResource(R.string.login),
                         style = entranceButton
                     )
                 }
+                if (errorMessage.isNotEmpty()) {
+                    Text(
+                        text = errorMessage,
+                        style = errorMessageStyle
+                    )
+                }
+
             }
         }
     }
 }
 
-private fun isValidCredentials(email: String, password: String): Boolean {
-    val emailPattern = Regex("[a-zA-Z0–9._-]+@[a-z]+\\.+[a-z]+")
-    val passwordPattern = Regex("^(?=.*[0–9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$")
-    return emailPattern.matches(email) && passwordPattern.matches(password)
-}
