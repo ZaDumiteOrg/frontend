@@ -1,4 +1,4 @@
-package com.example.zadumite_frontend
+package com.example.zadumite_frontend.ui.signup
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,6 +38,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.zadumite_frontend.R
+import com.example.zadumite_frontend.data.model.user.SignUpRequest
 import com.example.zadumite_frontend.ui.theme.Beige
 import com.example.zadumite_frontend.ui.theme.Brown
 import com.example.zadumite_frontend.ui.theme.LightBrown
@@ -45,12 +48,25 @@ import com.example.zadumite_frontend.ui.theme.White
 import com.example.zadumite_frontend.ui.theme.enterText
 import com.example.zadumite_frontend.ui.theme.entranceButton
 import com.example.zadumite_frontend.ui.theme.userCredentials
+import org.koin.androidx.compose.koinViewModel
+
 
 @Composable
 fun SignUpScreen(
     onNavigateBack: () -> Unit,
-    onNavigateToMain: () -> Unit
+    onNavigateToMain: () -> Unit,
+    viewModel: SignUpViewModel = koinViewModel(),
 ) {
+    val signUpState by viewModel.signUpState.observeAsState()
+
+    var firstName by remember {
+        mutableStateOf("")
+    }
+
+    var lastName by remember {
+        mutableStateOf("")
+    }
+
     var email by remember {
         mutableStateOf("")
     }
@@ -95,6 +111,82 @@ fun SignUpScreen(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.first_name),
+                        style = userCredentials,
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(start = 16.dp)
+                    )
+                }
+                OutlinedTextField(
+                    value = firstName,
+                    onValueChange = {firstName = it},
+                    label = {
+                        Text(
+                            text = stringResource(R.string.enter_first_name),
+                            style = enterText,
+                            modifier = Modifier.alpha(0.41f)
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp),
+                    shape = RoundedCornerShape(50.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Brown,
+                        unfocusedBorderColor = LightBrown,
+                        backgroundColor = LightGray,
+                        cursorColor = LightBrown,
+                        textColor = LightBrown
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.last_name),
+                        style = userCredentials,
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(start = 16.dp)
+                    )
+                }
+                OutlinedTextField(
+                    value = lastName,
+                    onValueChange = {lastName = it},
+                    label = {
+                        Text(
+                            text = stringResource(R.string.enter_last_name),
+                            style = enterText,
+                            modifier = Modifier.alpha(0.41f)
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp),
+                    shape = RoundedCornerShape(50.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Brown,
+                        unfocusedBorderColor = LightBrown,
+                        backgroundColor = LightGray,
+                        cursorColor = LightBrown,
+                        textColor = LightBrown
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -155,7 +247,7 @@ fun SignUpScreen(
                         Text(
                             text = stringResource(R.string.example_password),
                             style = enterText,
-                            modifier =  Modifier
+                            modifier = Modifier
                                 .alpha(0.41f)
                                 .width(139.dp)
                                 .height(20.dp))
@@ -181,7 +273,13 @@ fun SignUpScreen(
                     onClick = {
                         isValid = isValidCredentials(email, password)
                         if (isValid) {
-                            onNavigateToMain
+                            println("Valid credentials, signing up user...")
+                            val user = SignUpRequest(firstName, lastName, email, password)
+                            viewModel.signUp(user)
+                            onNavigateToMain()
+                        }
+                        else {
+                            println("Invalid credentials")
                         }
                     } ,
                     border = BorderStroke(1.dp, Brown),
@@ -202,7 +300,7 @@ fun SignUpScreen(
 }
 
 private fun isValidCredentials(email: String, password: String): Boolean {
-    val emailPattern = Regex("[a-zA-Z0–9._-]+@[a-z]+\\.+[a-z]+")
-    val passwordPattern = Regex("^(?=.*[0–9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$")
+    val emailPattern = Regex("^[a-zA-Z0-9._-]+@[a-zA-Z]+\\.[a-zA-Z]{2,}$")
+    val passwordPattern = Regex("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$")
     return emailPattern.matches(email) && passwordPattern.matches(password)
 }

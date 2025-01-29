@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">ZaDumite-frontend</string>
-    <string name="app_title">За думите</string>>
-    <string name="login_button">Влизане</string>
-    <string name="signup_button">Регистрация</string>
+    <string name="app_title">За думите</string>
+    <string name="login">Влизане</string>
+    <string name="signup">Регистрация</string>
+    <string name="email">Имейл</string>
+    <string name="password">Парола</string>
+    <string name="example_email">example@gmail.com</string>>
+    <string name="example_password">********</string>
+    <string name="back">Назад</string>
 </resources>

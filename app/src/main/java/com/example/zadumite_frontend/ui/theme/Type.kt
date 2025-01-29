@@ -1,7 +1,6 @@
 package com.example.zadumite_frontend.ui.theme
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -36,5 +35,39 @@ val appTitle: TextStyle
                     fontFamily = FontFamily(Font(R.font.alegreya)),
                     fontWeight = FontWeight(800),
                     color = Brown,
+        )
+    }
+
+val userCredentials: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 15.sp,
+            lineHeight = 18.86.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(500),
+            color = Brown,
+        )
+    }
+
+val enterText: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 16.sp,
+            lineHeight = 20.11.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(500),
+            color = Brown,
+        )
+    }
+
+val errorMessageStyle: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 14.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            color = Red,
         )
     }
