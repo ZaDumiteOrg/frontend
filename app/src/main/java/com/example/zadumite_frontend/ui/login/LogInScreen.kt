@@ -1,5 +1,7 @@
 package com.example.zadumite_frontend.ui.login
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
@@ -26,7 +29,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -38,7 +43,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.zadumite_frontend.MainActivity
 import com.example.zadumite_frontend.R
+import com.example.zadumite_frontend.session.SessionViewModel
 import com.example.zadumite_frontend.ui.theme.Beige
 import com.example.zadumite_frontend.ui.theme.Brown
 import com.example.zadumite_frontend.ui.theme.LightBrown
@@ -48,15 +55,19 @@ import com.example.zadumite_frontend.ui.theme.enterText
 import com.example.zadumite_frontend.ui.theme.entranceButton
 import com.example.zadumite_frontend.ui.theme.errorMessageStyle
 import com.example.zadumite_frontend.ui.theme.userCredentials
-import com.example.zadumite_frontend.ui.utils.isValidEmail
-import com.example.zadumite_frontend.ui.utils.isValidPassword
+import com.example.zadumite_frontend.utils.validation.isValidEmail
+import com.example.zadumite_frontend.utils.validation.isValidPassword
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun LogInScreen(
     onNavigateBack: ()-> Unit,
-    onNavigateToMain: ()-> Unit
+    onNavigateToWordScreen: ()-> Unit,
+    viewModel: LogInViewModel = koinViewModel()
 ) {
+    val sessionViewModel: SessionViewModel = koinViewModel()
+
     var email by remember {
         mutableStateOf("")
     }
@@ -70,6 +81,23 @@ fun LogInScreen(
     }
 
     val context = LocalContext.current
+
+    val loginResult by viewModel.loginResult.observeAsState()
+    val isLoading by viewModel.isLoading.observeAsState(initial = false)
+
+    LaunchedEffect(loginResult) {
+        loginResult?.let { result ->
+            result.fold(
+                onSuccess = {
+                    Toast.makeText(context, "Login Successful!", Toast.LENGTH_SHORT).show()
+                    onNavigateToWordScreen()
+                },
+                onFailure = { exception ->
+                    errorMessage = exception.message ?: context.getString(R.string.login_failed)
+                }
+            )
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -197,7 +225,19 @@ fun LogInScreen(
                             }
                             else -> {
                                 errorMessage = ""
-                                onNavigateToMain()
+                                viewModel.logIn(email, password) { userId ->
+                                    if (userId != null) {
+                                        Log.d("Login", "Setting User ID in SessionViewModel: $userId")
+                                        sessionViewModel.setUserId(userId)
+                                        println("User id from login: $userId")
+                                        onNavigateToWordScreen()
+                                        (context as? MainActivity)?.requestNotificationPermission()
+                                    } else {
+                                        Log.e("Login", "Failed to retrieve user ID")
+                                        errorMessage = context.getString(R.string.login_failed)
+                                    }
+
+                                }
                             }
                         }
                     } ,
@@ -222,7 +262,11 @@ fun LogInScreen(
                         style = errorMessageStyle
                     )
                 }
-
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        color = LightBrown,
+                        modifier = Modifier.padding(top = 16.dp))
+                }
             }
         }
     }

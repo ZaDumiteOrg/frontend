@@ -7,5 +7,21 @@
     <string name="password">Парола</string>
     <string name="example_email">example@gmail.com</string>>
     <string name="example_password">********</string>
+    <string name="first_name">Име</string>
+    <string name="enter_first_name">Въведете име</string>
+    <string name="last_name">Фамилия</string>
+    <string name="enter_last_name">Въведете фамилия</string>
     <string name="back">Назад</string>
+    <string name="invalid_email">Невалиден имейл</string>
+    <string name="invalid_password">Паролата трябва да е дълга поне 8 символа, да съдържа главна буква, малка буква и число.</string>
+    <string name="login_failed">Неуспешно влизане</string>
+    <string name="signup_failed">Неуспешна регистрация</string>
+    <string name="fetching_word_failed">Неуспешно извличане на дума</string>
+    <string name="login_successful">Успешен вход</string>
+    <string name="word_of_week">Дума на седмицата</string>
+    <string name="word_description">Описание</string>
+    <string name="word_example">Примерно изречение</string>
+    <string name="words">Думи</string>
+    <string name="profile">Профил</string>
+    <string name="no_words_error">Няма намерени думи</string>
 </resources>
