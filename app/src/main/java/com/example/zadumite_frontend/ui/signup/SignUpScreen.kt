@@ -1,6 +1,5 @@
 package com.example.zadumite_frontend.ui.signup
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,10 +23,11 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -40,14 +40,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.zadumite_frontend.R
 import com.example.zadumite_frontend.data.model.user.SignUpRequest
-import com.example.zadumite_frontend.session.SessionViewModel
 import com.example.zadumite_frontend.ui.theme.Beige
 import com.example.zadumite_frontend.ui.theme.Brown
 import com.example.zadumite_frontend.ui.theme.LightBrown
 import com.example.zadumite_frontend.ui.theme.LightGray
+import com.example.zadumite_frontend.ui.theme.Red
 import com.example.zadumite_frontend.ui.theme.White
 import com.example.zadumite_frontend.ui.theme.enterText
 import com.example.zadumite_frontend.ui.theme.entranceButton
@@ -63,8 +64,6 @@ fun SignUpScreen(
     onNavigateToWordScreen: () -> Unit,
     viewModel: SignUpViewModel = koinViewModel(),
 ) {
-    val sessionViewModel: SessionViewModel = koinViewModel()
-    val signUpState by viewModel.signUpState.observeAsState()
 
     var firstName by remember {
         mutableStateOf("")
@@ -87,6 +86,7 @@ fun SignUpScreen(
     }
 
     val context = LocalContext.current
+    val signUpState by viewModel.signUpState.observeAsState()
     val isLoading by viewModel.isLoading.observeAsState(initial = false)
 
     Box(
@@ -107,7 +107,7 @@ fun SignUpScreen(
             ) {
                 IconButton(onClick = onNavigateBack) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.back),
                         tint = Brown
                     )
@@ -277,6 +277,23 @@ fun SignUpScreen(
                     )
                 )
 
+                signUpState?.let { result ->
+                    when {
+                        result.isSuccess -> {
+                            LaunchedEffect(Unit) {
+                                onNavigateToWordScreen()
+                            }
+                        }
+                        result.isFailure -> {
+                            Text(
+                                text = "Sign-up failed: ${result.exceptionOrNull()?.message}",
+                                color = Red,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedButton(
@@ -291,16 +308,9 @@ fun SignUpScreen(
                             else -> {
                                 errorMessage = ""
                                 val user = SignUpRequest(firstName, lastName, email, password)
-                                viewModel.signUp(user) { userId ->
-                                    if (userId != null) {
-                                        Log.d("SignUp", "Setting User ID in SessionViewModel: $userId")
-                                        sessionViewModel.setUserId(userId)
-                                        println("User id from sign-up: $userId")
+                                viewModel.signUp(user) {
                                         onNavigateToWordScreen()
-                                    } else {
-                                        Log.e("SignUp", "Failed to retrieve user ID")
-                                        errorMessage = context.getString(R.string.signup_failed)
-                                    }
+
                                 }
                             }
                         }
