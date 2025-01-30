@@ -16,8 +16,18 @@ class AuthRepository(
         try{
             val response = apiService.signUp(user)
 
-            if (response.isSuccessful) {
-                return response.body() ?: throw Exception("Empty response body")
+            if (response.isSuccessful && response.body() != null) {
+                val signUpResponse = response.body()!!
+                tokenManager.saveAccessJwt(signUpResponse.accessToken)
+                tokenManager.saveRefreshJwt(signUpResponse.refreshToken)
+                val userId = TokenUtils.decodeUserIdFromToken(signUpResponse.accessToken)
+                if (userId != null) {
+                    tokenManager.saveUserId(userId)
+                } else {
+                    throw Exception("No user id: ${response.code()} - ${response.message()} - ${response.errorBody()?.string()}")
+                }
+                //return response.body() ?: throw Exception("Empty response body")
+                return signUpResponse
             } else {
                 throw Exception("Error signing up: ${response.code()} - ${response.message()}")
             }
