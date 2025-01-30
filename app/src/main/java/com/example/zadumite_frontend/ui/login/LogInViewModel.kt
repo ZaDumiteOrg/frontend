@@ -1,6 +1,5 @@
 package com.example.zadumite_frontend.ui.login
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.zadumite_frontend.data.repository.AuthRepository
 import androidx.lifecycle.LiveData
@@ -18,22 +17,22 @@ class LogInViewModel(private val repository: AuthRepository): ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    fun logIn(email: String, password: String, onResult: (Int?) -> Unit) {
+    fun logIn(email: String, password: String, onResult: (String?) -> Unit) {
         _isLoading.postValue(true)
         viewModelScope.launch {
             try {
                 val loginRequest = LogInRequest(email, password)
                 val tokenResponse = repository.logIn(loginRequest)
 
-                val userId = TokenUtils.decodeUserIdFromToken(tokenResponse.accessToken)
+                val role = TokenUtils.decodeUserRoleFromToken(tokenResponse.accessToken)
 
-                if (userId != null) {
+                if (role != null) {
                     _loginResult.postValue(Result.success(tokenResponse))
                 } else {
-                    _loginResult.postValue(Result.failure(Exception("Failed to decode user ID")))
+                    _loginResult.postValue(Result.failure(Exception("Failed to decode role")))
                 }
 
-                onResult(userId)
+                onResult(role)
             } catch (e: Exception) {
                 _loginResult.postValue(Result.failure(e))
                 onResult(null)

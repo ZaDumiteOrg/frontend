@@ -26,7 +26,7 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,7 +45,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.zadumite_frontend.MainActivity
 import com.example.zadumite_frontend.R
-import com.example.zadumite_frontend.session.SessionViewModel
 import com.example.zadumite_frontend.ui.theme.Beige
 import com.example.zadumite_frontend.ui.theme.Brown
 import com.example.zadumite_frontend.ui.theme.LightBrown
@@ -64,10 +63,9 @@ import org.koin.androidx.compose.koinViewModel
 fun LogInScreen(
     onNavigateBack: ()-> Unit,
     onNavigateToWordScreen: ()-> Unit,
+    onNavigateToAddWordScreen: ()-> Unit,
     viewModel: LogInViewModel = koinViewModel()
 ) {
-    val sessionViewModel: SessionViewModel = koinViewModel()
-
     var email by remember {
         mutableStateOf("")
     }
@@ -117,7 +115,7 @@ fun LogInScreen(
             ) {
                 IconButton(onClick = onNavigateBack) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.back),
                         tint = Brown
                     )
@@ -225,20 +223,29 @@ fun LogInScreen(
                             }
                             else -> {
                                 errorMessage = ""
-                                viewModel.logIn(email, password) { userId ->
-                                    if (userId != null) {
-                                        Log.d("Login", "Setting User ID in SessionViewModel: $userId")
-                                        sessionViewModel.setUserId(userId)
-                                        println("User id from login: $userId")
-                                        onNavigateToWordScreen()
-                                        (context as? MainActivity)?.requestNotificationPermission()
-                                    } else {
-                                        Log.e("Login", "Failed to retrieve user ID")
+                                viewModel.logIn(email, password) { role ->
+                                    if (role == null) {
+                                        Log.e("Login", "Failed to retrieve role")
                                         errorMessage = context.getString(R.string.login_failed)
+                                        return@logIn
                                     }
 
+                                    Log.d("Login", "Role: $role")
+
+                                    when (role) {
+                                        "admin" -> {
+                                            Log.d("Login", "Navigating to Add Word Screen")
+                                            onNavigateToAddWordScreen()
+                                        }
+                                        else -> {
+                                            Log.d("Login", "Navigating to Word Screen")
+                                            onNavigateToWordScreen()
+                                            (context as? MainActivity)?.requestNotificationPermission()
+                                        }
+                                    }
                                 }
                             }
+
                         }
                     } ,
                     border = BorderStroke(1.dp, Brown),

@@ -6,6 +6,7 @@ import com.example.zadumite_frontend.data.model.token.TokenResponse
 import com.example.zadumite_frontend.data.model.user.LogInRequest
 import com.example.zadumite_frontend.data.model.user.SignUpRequest
 import com.example.zadumite_frontend.data.model.user.SignUpResponse
+import com.example.zadumite_frontend.utils.token.TokenUtils
 
 class AuthRepository(
     private val apiService: ZaDumiteApiService,
@@ -15,8 +16,18 @@ class AuthRepository(
         try{
             val response = apiService.signUp(user)
 
-            if (response.isSuccessful) {
-                return response.body() ?: throw Exception("Empty response body")
+            if (response.isSuccessful && response.body() != null) {
+                val signUpResponse = response.body()!!
+                tokenManager.saveAccessJwt(signUpResponse.accessToken)
+                tokenManager.saveRefreshJwt(signUpResponse.refreshToken)
+                val userId = TokenUtils.decodeUserIdFromToken(signUpResponse.accessToken)
+                if (userId != null) {
+                    tokenManager.saveUserId(userId)
+                } else {
+                    throw Exception("No user id: ${response.code()} - ${response.message()} - ${response.errorBody()?.string()}")
+                }
+                //return response.body() ?: throw Exception("Empty response body")
+                return signUpResponse
             } else {
                 throw Exception("Error signing up: ${response.code()} - ${response.message()}")
             }
@@ -33,6 +44,12 @@ class AuthRepository(
                 val body = response.body()!!
                 tokenManager.saveAccessJwt(body.accessToken)
                 tokenManager.saveRefreshJwt(body.refreshToken)
+                val userId = TokenUtils.decodeUserIdFromToken(body.accessToken)
+                if (userId != null) {
+                    tokenManager.saveUserId(userId)
+                } else {
+                    throw Exception("No user id: ${response.code()} - ${response.message()} - ${response.errorBody()?.string()}")
+                }
                 return body
             } else {
                 throw Exception("Login failed: ${response.code()} - ${response.message()} - ${response.errorBody()?.string()}")
