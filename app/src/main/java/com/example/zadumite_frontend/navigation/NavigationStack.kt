@@ -1,27 +1,19 @@
 package com.example.zadumite_frontend.navigation
-import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.example.zadumite_frontend.ui.signup.SignUpScreen
 import com.example.zadumite_frontend.StartScreen
-import com.example.zadumite_frontend.session.SessionViewModel
+import com.example.zadumite_frontend.ui.add_word.AddWordScreen
 import com.example.zadumite_frontend.ui.login.LogInScreen
 import com.example.zadumite_frontend.ui.scaffold.ZaDumiteScaffold
 import com.example.zadumite_frontend.ui.user_words.UserWordsScreen
 import com.example.zadumite_frontend.ui.word.WordOfTheWeekScreen
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun NavigationStack(sessionViewModel: SessionViewModel = koinViewModel()) {
+fun NavigationStack() {
     val navController = rememberNavController()
-    val userIdState = sessionViewModel.userId.observeAsState()
-    val userId = userIdState.value
-
     NavHost(
         navController = navController,
         startDestination = Screen.Start.route
@@ -41,8 +33,12 @@ fun NavigationStack(sessionViewModel: SessionViewModel = koinViewModel()) {
         composable(route = Screen.LogIn.route) {
             LogInScreen(
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToWordScreen = { navController.navigate(Screen.Word.route) }
+                onNavigateToWordScreen = { navController.navigate(Screen.Word.route) },
+                onNavigateToAddWordScreen = { navController.navigate(Screen.AddWord.route) }
             )
+        }
+        composable(route = Screen.AddWord.route) {
+            AddWordScreen()
         }
         composable(route = Screen.Word.route) {
             val currentRoute = navController.currentBackStackEntry?.destination?.route
@@ -50,12 +46,8 @@ fun NavigationStack(sessionViewModel: SessionViewModel = koinViewModel()) {
                 ZaDumiteScaffold(
                     currentRoute = currentRoute,
                     onNavigateToWords = {
-                        if (userId != null) {
-                            navController.navigate(Screen.UserWords.route.replace("{userId}", userId.toString())) {
-                                popUpTo(Screen.Word.route) { inclusive = false }
-                            }
-                        } else {
-                            Log.e("NavigationStack", "User ID is null, cannot navigate to UserWordsScreen")
+                        navController.navigate(Screen.UserWords.route) {
+                            popUpTo(Screen.Word.route) { inclusive = false }
                         }
                     },
                     onNavigateToHome = {
@@ -70,29 +62,22 @@ fun NavigationStack(sessionViewModel: SessionViewModel = koinViewModel()) {
                 WordOfTheWeekScreen()
             }
         }
-        composable(
-            route = Screen.UserWords.route,
-            arguments = listOf(navArgument("userId") { type = NavType.IntType })
-        ) {
-            if (userId != null) {
-                val currentRoute = navController.currentBackStackEntry?.destination?.route
-                ZaDumiteScaffold(
-                    currentRoute = currentRoute,
-                    onNavigateToWords = {
-                        navController.navigate(Screen.UserWords.route.replace("{userId}", userId.toString())) {
-                            popUpTo(Screen.Word.route) { inclusive = false }
-                        }
-                    },
-                    onNavigateToHome = {
-                        navController.navigate(Screen.Word.route) {
-                            popUpTo(Screen.Word.route) { inclusive = false }
-                        }
+        composable(route = Screen.UserWords.route) {
+            val currentRoute = navController.currentBackStackEntry?.destination?.route
+            ZaDumiteScaffold(
+                currentRoute = currentRoute,
+                onNavigateToWords = {
+                    navController.navigate(Screen.UserWords.route) {
+                        popUpTo(Screen.Word.route) { inclusive = false }
                     }
-                ) {
-                    UserWordsScreen(userId = userId)
+                },
+                onNavigateToHome = {
+                    navController.navigate(Screen.Word.route) {
+                        popUpTo(Screen.Word.route) { inclusive = false }
+                    }
                 }
-            } else {
-                Log.e("NavigationStack", "User ID is null, cannot navigate to UserWordsScreen")
+            ) {
+                UserWordsScreen()
             }
         }
 
