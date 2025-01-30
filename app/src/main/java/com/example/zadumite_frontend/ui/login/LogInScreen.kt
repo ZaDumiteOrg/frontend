@@ -64,10 +64,9 @@ import org.koin.androidx.compose.koinViewModel
 fun LogInScreen(
     onNavigateBack: ()-> Unit,
     onNavigateToWordScreen: ()-> Unit,
+    onNavigateToAddWordScreen: ()-> Unit,
     viewModel: LogInViewModel = koinViewModel()
 ) {
-    val sessionViewModel: SessionViewModel = koinViewModel()
-
     var email by remember {
         mutableStateOf("")
     }
@@ -225,20 +224,29 @@ fun LogInScreen(
                             }
                             else -> {
                                 errorMessage = ""
-                                viewModel.logIn(email, password) { userId ->
-                                    if (userId != null) {
-                                        Log.d("Login", "Setting User ID in SessionViewModel: $userId")
-                                        sessionViewModel.setUserId(userId)
-                                        println("User id from login: $userId")
-                                        onNavigateToWordScreen()
-                                        (context as? MainActivity)?.requestNotificationPermission()
-                                    } else {
-                                        Log.e("Login", "Failed to retrieve user ID")
+                                viewModel.logIn(email, password) { role ->
+                                    if (role == null) {
+                                        Log.e("Login", "Failed to retrieve role")
                                         errorMessage = context.getString(R.string.login_failed)
+                                        return@logIn
                                     }
 
+                                    Log.d("Login", "Role: $role")
+
+                                    when (role) {
+                                        "admin" -> {
+                                            Log.d("Login", "Navigating to Add Word Screen")
+                                            onNavigateToAddWordScreen()
+                                        }
+                                        else -> {
+                                            Log.d("Login", "Navigating to Word Screen")
+                                            onNavigateToWordScreen()
+                                            (context as? MainActivity)?.requestNotificationPermission()
+                                        }
+                                    }
                                 }
                             }
+
                         }
                     } ,
                     border = BorderStroke(1.dp, Brown),
