@@ -1,5 +1,6 @@
 package com.example.zadumite_frontend.di
 import com.example.zadumite_frontend.session.SessionViewModel
+import com.example.zadumite_frontend.ui.add_word.AddWordViewModel
 import com.example.zadumite_frontend.ui.login.LogInViewModel
 import com.example.zadumite_frontend.ui.signup.SignUpViewModel
 import com.example.zadumite_frontend.ui.user_words.UserWordsViewModel
@@ -12,5 +13,6 @@ val viewModelModule = module {
     viewModel { LogInViewModel(get()) }
     viewModel { WordViewModel(get()) }
     single { SessionViewModel() }
-    viewModel { UserWordsViewModel(get()) }
+    viewModel { UserWordsViewModel(get(), get()) }
+    viewModel{ AddWordViewModel(get())}
 }
