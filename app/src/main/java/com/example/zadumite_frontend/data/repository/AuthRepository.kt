@@ -6,6 +6,7 @@ import com.example.zadumite_frontend.data.model.token.TokenResponse
 import com.example.zadumite_frontend.data.model.user.LogInRequest
 import com.example.zadumite_frontend.data.model.user.SignUpRequest
 import com.example.zadumite_frontend.data.model.user.SignUpResponse
+import com.example.zadumite_frontend.utils.token.TokenUtils
 
 class AuthRepository(
     private val apiService: ZaDumiteApiService,
@@ -33,6 +34,12 @@ class AuthRepository(
                 val body = response.body()!!
                 tokenManager.saveAccessJwt(body.accessToken)
                 tokenManager.saveRefreshJwt(body.refreshToken)
+                val userId = TokenUtils.decodeUserIdFromToken(body.accessToken)
+                if (userId != null) {
+                    tokenManager.saveUserId(userId)
+                } else {
+                    throw Exception("No user id: ${response.code()} - ${response.message()} - ${response.errorBody()?.string()}")
+                }
                 return body
             } else {
                 throw Exception("Login failed: ${response.code()} - ${response.message()} - ${response.errorBody()?.string()}")
