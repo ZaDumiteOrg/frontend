@@ -24,7 +24,6 @@ class LogInViewModel(private val repository: AuthRepository): ViewModel() {
                 val loginRequest = LogInRequest(email, password)
                 val tokenResponse = repository.logIn(loginRequest)
 
-              //val userId = TokenUtils.decodeUserIdFromToken(tokenResponse.accessToken)
                 val role = TokenUtils.decodeUserRoleFromToken(tokenResponse.accessToken)
 
                 if (role != null) {
