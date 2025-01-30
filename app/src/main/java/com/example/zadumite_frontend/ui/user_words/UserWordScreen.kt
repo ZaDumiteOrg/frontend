@@ -14,6 +14,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,14 +27,16 @@ import com.example.zadumite_frontend.ui.theme.errorMessageStyle
 import com.example.zadumite_frontend.ui.theme.usersWord
 import com.example.zadumite_frontend.ui.theme.usersWordExample
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.runtime.livedata.observeAsState
+
 
 @Composable
-fun UserWordsScreen(viewModel: UserWordsViewModel = koinViewModel(), userId: Int) {
-    val words = viewModel.userWords.value
-    val loading = viewModel.loading.value
+fun UserWordsScreen(viewModel: UserWordsViewModel = koinViewModel()) {
+    val words by viewModel.userWords.observeAsState(emptyList())
+    val loading by viewModel.loading.observeAsState(false)
 
     LaunchedEffect(Unit) {
-        viewModel.fetchUserWords(userId)
+        viewModel.fetchUserWords()
     }
 
     Box(
