@@ -11,6 +11,6 @@ val viewModelModule = module {
     viewModel { SignUpViewModel(get()) }
     viewModel { LogInViewModel(get()) }
     viewModel { WordViewModel(get()) }
-    viewModel { UserWordsViewModel(get(), get()) }
+    viewModel { UserWordsViewModel(get()) }
     viewModel{ AddWordViewModel(get())}
 }

@@ -1,16 +1,16 @@
 package com.example.zadumite_frontend.ui.login
 
 import androidx.lifecycle.ViewModel
-import com.example.zadumite_frontend.data.repository.AuthRepository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.zadumite_frontend.data.model.token.TokenResponse
 import com.example.zadumite_frontend.data.model.user.LogInRequest
+import com.example.zadumite_frontend.domain.LogInUseCase
 import com.example.zadumite_frontend.utils.token.TokenUtils
 import kotlinx.coroutines.launch
 
-class LogInViewModel(private val repository: AuthRepository): ViewModel() {
+class LogInViewModel(private val logInUseCase: LogInUseCase): ViewModel() {
     private val _loginResult = MutableLiveData<Result<TokenResponse>>()
     val loginResult: LiveData<Result<TokenResponse>> = _loginResult
 
@@ -22,7 +22,7 @@ class LogInViewModel(private val repository: AuthRepository): ViewModel() {
         viewModelScope.launch {
             try {
                 val loginRequest = LogInRequest(email, password)
-                val tokenResponse = repository.logIn(loginRequest)
+                val tokenResponse = logInUseCase(loginRequest)
 
                 val role = TokenUtils.decodeUserRoleFromToken(tokenResponse.accessToken)
 
