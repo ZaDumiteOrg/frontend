@@ -6,11 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.zadumite_frontend.data.model.user.SignUpRequest
 import com.example.zadumite_frontend.data.model.user.SignUpResponse
-import com.example.zadumite_frontend.data.repository.AuthRepository
+import com.example.zadumite_frontend.domain.SignUpUseCase
 import com.example.zadumite_frontend.utils.token.TokenUtils
 import kotlinx.coroutines.launch
 
-class SignUpViewModel(private val repository: AuthRepository) : ViewModel() {
+class SignUpViewModel(private val signUpUseCase: SignUpUseCase) : ViewModel() {
     private val _signUpState = MutableLiveData<Result<SignUpResponse>>()
     val signUpState: LiveData<Result<SignUpResponse>> get() = _signUpState
 
@@ -21,7 +21,7 @@ class SignUpViewModel(private val repository: AuthRepository) : ViewModel() {
         _isLoading.postValue(true)
         viewModelScope.launch {
             try {
-                val response = repository.signUp(request)
+                val response = signUpUseCase(request)
 
                 val userId = response.accessToken.let { token ->
                     TokenUtils.decodeUserIdFromToken(token)

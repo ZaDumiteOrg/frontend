@@ -6,11 +6,11 @@ import androidx.lifecycle.ViewModel
 import com.example.zadumite_frontend.data.model.word.Word
 import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
-import com.example.zadumite_frontend.network.ZaDumiteApiService
+import com.example.zadumite_frontend.domain.FetchWordUseCase
 import kotlinx.coroutines.launch
 
 
-class WordViewModel(private val apiService: ZaDumiteApiService) : ViewModel() {
+class WordViewModel(private val fetchWordUseCase: FetchWordUseCase) : ViewModel() {
     private val _wordOfTheWeek = mutableStateOf<Word?>(null)
     val wordOfTheWeek: State<Word?> = _wordOfTheWeek
 
@@ -25,7 +25,7 @@ class WordViewModel(private val apiService: ZaDumiteApiService) : ViewModel() {
         viewModelScope.launch {
             _loading.value = true
             try {
-                val word = apiService.getWordOfTheWeek()
+                val word = fetchWordUseCase()
                 _wordOfTheWeek.value = word
             } catch (e: Exception) {
                 Log.e("WordViewModel", "Error fetching word: ${e.message}")
