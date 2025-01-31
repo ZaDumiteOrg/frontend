@@ -14,11 +14,11 @@ class AddWordViewModel(private val addWordUseCase: AddWordUseCase) : ViewModel()
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
-    fun addWord(word: String, example: String, description: String, synonym: String? = null) {
+    fun addWord(word: String, definition: String, example: String,  synonym: String? = null) {
         _isLoading.postValue(true)
         viewModelScope.launch {
             try {
-                val wordResponse =  addWordUseCase(word, example, description, synonym)
+                val wordResponse =  addWordUseCase(word, definition, example,  synonym)
                 _addWordResult.postValue(wordResponse)
 
             } catch (e: Exception) {
