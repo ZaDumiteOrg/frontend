@@ -6,5 +6,6 @@ val appModule = listOf(
     interceptorModule,
     authenticatorModule,
     repositoryModule,
+    useCaseModule,
     viewModelModule
 )

@@ -16,8 +16,12 @@ class RefreshTokenInterceptor (
         val token = runBlocking {
             tokenManager.getRefreshJwt()
         }
-        val request = chain.request().newBuilder()
-        request.addHeader(HEADER_AUTHORIZATION, "$TOKEN_TYPE $token")
-        return chain.proceed(request.build())
+        val request = chain.request().newBuilder().apply {
+            if (!token.isNullOrEmpty()) {
+                addHeader(HEADER_AUTHORIZATION, "$TOKEN_TYPE $token")
+            }
+        }.build()
+
+        return chain.proceed(request)
     }
 }
