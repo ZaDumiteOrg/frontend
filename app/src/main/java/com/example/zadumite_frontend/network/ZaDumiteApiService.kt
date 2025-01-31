@@ -23,4 +23,7 @@ interface ZaDumiteApiService {
 
     @GET("user/{id}/words")
     suspend fun getUserWords(@Path("id") userId: Int): List<Word>
+
+    @POST("word")
+    suspend fun addWord(@Body request: Word): Response<Word>
 }
