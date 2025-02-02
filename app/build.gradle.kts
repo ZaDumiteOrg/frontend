@@ -68,24 +68,25 @@ dependencies {
     debugImplementation ("androidx.compose.ui:ui-tooling")
     debugImplementation ("androidx.compose.ui:ui-test-manifest")
 
+
     //UI
     implementation ("androidx.compose.material:material")
+    implementation("androidx.compose.material3:material3")
 
     //Navigation
     implementation ("androidx.navigation:navigation-compose:2.8.5")
     implementation ("androidx.compose.ui:ui:1.7.6")
-    implementation ("androidx.compose.material:material:1.7.6")
     implementation ("androidx.compose.ui:ui-tooling:1.7.6")
 
     //Retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-moshi:2.9.0")
     implementation ("com.squareup.okhttp3:okhttp:5.0.0-alpha.3")
+
     //GSON
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 
     // Koin
-    // Koin core dependency (latest version)
     implementation ("io.insert-koin:koin-android:4.0.1")
 
     // Koin for Jetpack Compose
@@ -116,4 +117,9 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.2.0-alpha12")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
     implementation("com.google.accompanist:accompanist-permissions:0.31.1-alpha")
+
+    //Icons
+    implementation(platform("androidx.compose:compose-bom:2025.01.01"))
+    implementation ("androidx.compose.material:material-icons-extended")
+
 }
