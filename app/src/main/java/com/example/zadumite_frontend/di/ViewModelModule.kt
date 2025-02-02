@@ -1,4 +1,5 @@
 package com.example.zadumite_frontend.di
+import com.example.zadumite_frontend.network.monitor.NetworkViewModel
 import com.example.zadumite_frontend.ui.add_word.AddWordViewModel
 import com.example.zadumite_frontend.ui.login.LogInViewModel
 import com.example.zadumite_frontend.ui.signup.SignUpViewModel
@@ -13,4 +14,5 @@ val viewModelModule = module {
     viewModel { WordViewModel(get()) }
     viewModel { UserWordsViewModel(get()) }
     viewModel{ AddWordViewModel(get())}
+    viewModel { NetworkViewModel(get()) }
 }
