@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,24 +22,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.zadumite_frontend.R
-import com.example.zadumite_frontend.ui.theme.Beige
-import com.example.zadumite_frontend.ui.theme.Brown
 import com.example.zadumite_frontend.ui.theme.LightBrown
 import com.example.zadumite_frontend.ui.theme.White
-import com.example.zadumite_frontend.ui.theme.entranceButton
 import com.example.zadumite_frontend.ui.theme.errorMessageStyle
-import com.example.zadumite_frontend.ui.theme.userCredentials
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.text.style.TextAlign
 import com.example.zadumite_frontend.network.monitor.ConnectivityObserver
 import com.example.zadumite_frontend.network.monitor.NetworkViewModel
+import com.example.zadumite_frontend.ui.custom_elements.CustomButton
+import com.example.zadumite_frontend.ui.custom_elements.CustomOutlinedTextField
+import com.example.zadumite_frontend.ui.theme.Red
 
 @Composable
 fun AddWordScreen(
@@ -61,13 +56,6 @@ fun AddWordScreen(
     val networkStatus by networkViewModel.networkStatus.collectAsState()
     val isNetworkAvailable = networkStatus == ConnectivityObserver.Status.Available
 
-    LaunchedEffect(networkStatus) {
-        if (networkStatus == ConnectivityObserver.Status.Lost ||
-            networkStatus == ConnectivityObserver.Status.Unavailable
-        ) {
-            Toast.makeText(context, context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
-        }
-    }
 
     Box(
         modifier = Modifier
@@ -81,102 +69,71 @@ fun AddWordScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            if (!isNetworkAvailable) {
+                Text(
+                    text = stringResource(R.string.no_internet_connection),
+                    color = Red,
+                    style = errorMessageStyle,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            }
+
             Spacer(modifier = Modifier.height(12.dp))
 
-            Text(
-                text = stringResource(R.string.word),
-                style = userCredentials
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
+            CustomOutlinedTextField(
                 value = word,
                 onValueChange = { input ->
                     if (input.all { it.isLetter() || it.isWhitespace() }) {
                         word = input
                     }
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                modifier = Modifier.fillMaxWidth(0.9f),
-                shape = RoundedCornerShape(50),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Brown,
-                    unfocusedBorderColor = LightBrown,
-                    cursorColor = LightBrown,
-                    focusedTextColor = LightBrown
-                ),
-                readOnly = !isNetworkAvailable
+                label = stringResource(R.string.word),
+                isReadOnly = !isNetworkAvailable
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = stringResource(R.string.word_description),
-                style = userCredentials
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
+            CustomOutlinedTextField(
                 value = definition,
-                onValueChange = { definition = it },
-                modifier = Modifier.fillMaxWidth(0.9f),
-                shape = RoundedCornerShape(50),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Brown,
-                    unfocusedBorderColor = LightBrown,
-                    cursorColor = LightBrown,
-                    focusedTextColor = LightBrown
-                ),
-                readOnly = !isNetworkAvailable
+                onValueChange = { input ->
+                    if (input.all { it.isLetter() || it.isWhitespace() }) {
+                        definition = input
+                    } },
+                label = stringResource(R.string.word_description),
+                isReadOnly = !isNetworkAvailable
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = stringResource(R.string.word_example),
-                style = userCredentials
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
+            CustomOutlinedTextField(
                 value = example,
-                onValueChange = { example = it },
-                modifier = Modifier.fillMaxWidth(0.9f),
-                shape = RoundedCornerShape(50),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Brown,
-                    unfocusedBorderColor = LightBrown,
-                    cursorColor = LightBrown,
-                    focusedTextColor = LightBrown
-                ),
-                readOnly = !isNetworkAvailable
+                onValueChange = {input ->
+                    if (input.all { it.isLetter() || it.isWhitespace() }) {
+                        example = input
+                    }},
+                label = stringResource(R.string.word_example),
+                isReadOnly = !isNetworkAvailable
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = stringResource(R.string.synonym),
-                style = userCredentials
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
+            CustomOutlinedTextField(
                 value = synonym,
-                onValueChange = { synonym = it },
-                modifier = Modifier.fillMaxWidth(0.9f),
-                shape = RoundedCornerShape(50),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Brown,
-                    unfocusedBorderColor = LightBrown,
-                    cursorColor = LightBrown,
-                    focusedTextColor = LightBrown
-                ),
-                readOnly = !isNetworkAvailable
+                onValueChange = { input ->
+                    if (input.all { it.isLetter() || it.isWhitespace() }) {
+                        synonym = input
+                    } },
+                label = stringResource(R.string.synonym),
+                isReadOnly = !isNetworkAvailable
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Button(
+            CustomButton(
+                text = stringResource(R.string.add_word),
+                isEnabled = isNetworkAvailable && !isLoading,
                 onClick = {
                     errorMessage = if (word.isBlank() || example.isBlank() || definition.isBlank()) {
                         context.getString(R.string.add_word_error)
@@ -184,20 +141,8 @@ fun AddWordScreen(
                         viewModel.addWord(word, definition, example, synonym.takeIf { it.isNotBlank() })
                         ""
                     }
-                },
-                modifier = Modifier.width(277.dp),
-                shape = RoundedCornerShape(50),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Beige,
-                    contentColor = Brown
-                ),
-                enabled = isNetworkAvailable && !isLoading
-            ) {
-                Text(
-                    text = stringResource(R.string.add_word),
-                    style = entranceButton
-                )
-            }
+                }
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -208,8 +153,6 @@ fun AddWordScreen(
                     color = Color.Red
                 )
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             addWordResult?.let { result ->
                 result.onSuccess {
@@ -222,8 +165,6 @@ fun AddWordScreen(
                     errorMessage = error.localizedMessage ?: stringResource(R.string.error_adding_wrord)
                 }
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             if (isLoading) {
                 CircularProgressIndicator(
