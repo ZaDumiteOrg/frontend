@@ -1,7 +1,6 @@
 package com.example.zadumite_frontend.ui.signup
 
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,20 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,27 +26,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.zadumite_frontend.R
 import com.example.zadumite_frontend.data.model.user.SignUpRequest
 import com.example.zadumite_frontend.network.monitor.ConnectivityObserver
 import com.example.zadumite_frontend.network.monitor.NetworkViewModel
-import com.example.zadumite_frontend.ui.theme.Beige
+import com.example.zadumite_frontend.ui.custom_elements.CustomButton
+import com.example.zadumite_frontend.ui.custom_elements.CustomOutlinedTextField
+import com.example.zadumite_frontend.ui.custom_elements.CustomProgressIndicator
+import com.example.zadumite_frontend.ui.custom_elements.PasswordTextField
 import com.example.zadumite_frontend.ui.theme.Brown
-import com.example.zadumite_frontend.ui.theme.LightBrown
-import com.example.zadumite_frontend.ui.theme.LightGray
 import com.example.zadumite_frontend.ui.theme.Red
 import com.example.zadumite_frontend.ui.theme.White
-import com.example.zadumite_frontend.ui.theme.Yellow
-import com.example.zadumite_frontend.ui.theme.enterText
-import com.example.zadumite_frontend.ui.theme.entranceButton
-import com.example.zadumite_frontend.ui.theme.userCredentials
+import com.example.zadumite_frontend.ui.theme.errorMessageStyle
 import com.example.zadumite_frontend.utils.validation.isValidEmail
 import com.example.zadumite_frontend.utils.validation.isValidPassword
 import org.koin.androidx.compose.koinViewModel
@@ -105,6 +89,18 @@ fun SignUpScreen(
         }
     }
 
+    LaunchedEffect(signUpState) {
+        signUpState?.let { result ->
+            result.fold(
+                onSuccess = {
+                    onNavigateToWordScreen()
+                },
+                onFailure = { exception ->
+                    errorMessage = exception.message ?: context.getString(R.string.signup_failed)
+                }
+            )
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -122,20 +118,29 @@ fun SignUpScreen(
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
             ) {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
+                androidx.compose.material3.IconButton(
+                    onClick = onNavigateBack,
+                ) {
+                    androidx.compose.material3.Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.back),
                         tint = Brown
                     )
                 }
             }
-            when (networkStatus) {
-                ConnectivityObserver.Status.Available -> Unit
-                ConnectivityObserver.Status.Losing -> Text(text = stringResource(R.string.connection_losing), color = Yellow)
-                ConnectivityObserver.Status.Lost -> Text(text = stringResource(R.string.no_internet_connection), color = Red)
-                ConnectivityObserver.Status.Unavailable -> Text(text = stringResource(R.string.no_internet_connection), color = Red)
+
+            if (!isNetworkAvailable) {
+                Text(
+                    text = stringResource(R.string.no_internet_connection),
+                    color = Red,
+                    style = errorMessageStyle,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                )
             }
+
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -143,225 +148,79 @@ fun SignUpScreen(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.first_name),
-                        style = userCredentials,
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .padding(start = 16.dp)
-                    )
-                }
-                OutlinedTextField(
+                CustomOutlinedTextField(
                     value = firstName,
                     onValueChange = {firstName = it},
-                    label = {
-                        Text(
-                            text = stringResource(R.string.enter_first_name),
-                            style = enterText,
-                            modifier = Modifier.alpha(0.41f)
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(55.dp),
-                    shape = RoundedCornerShape(50.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Brown,
-                        unfocusedBorderColor = LightBrown,
-                        backgroundColor = LightGray,
-                        cursorColor = LightBrown,
-                        textColor = LightBrown
-                    ),
-                    readOnly = !isNetworkAvailable
+                    label = stringResource(R.string.first_name),
+                    placeholder = stringResource(R.string.enter_first_name),
+                    isReadOnly = !isNetworkAvailable
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.last_name),
-                        style = userCredentials,
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .padding(start = 16.dp)
-                    )
-                }
-                OutlinedTextField(
+                CustomOutlinedTextField(
                     value = lastName,
                     onValueChange = {lastName = it},
-                    label = {
-                        Text(
-                            text = stringResource(R.string.enter_last_name),
-                            style = enterText,
-                            modifier = Modifier.alpha(0.41f)
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(55.dp),
-                    shape = RoundedCornerShape(50.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Brown,
-                        unfocusedBorderColor = LightBrown,
-                        backgroundColor = LightGray,
-                        cursorColor = LightBrown,
-                        textColor = LightBrown
-                    ),
-                    readOnly = !isNetworkAvailable
+                    label = stringResource(R.string.last_name),
+                    placeholder = stringResource(R.string.enter_last_name),
+                    isReadOnly = !isNetworkAvailable
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.email),
-                        style = userCredentials,
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .padding(start = 16.dp)
-                    )
-                }
-                OutlinedTextField(
+                CustomOutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = {
-                        Text(
-                            text = stringResource(R.string.example_email),
-                            style = enterText,
-                            modifier = Modifier
-                                .alpha(0.41f)
-                                .width(139.dp)
-                                .height(20.dp))
-                            },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(55.dp),
-                    shape = RoundedCornerShape(50.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Brown,
-                        unfocusedBorderColor = LightBrown,
-                        backgroundColor = LightGray,
-                        cursorColor = LightBrown,
-                        textColor = LightBrown
-                    ),
-                    readOnly = !isNetworkAvailable
+                    label = stringResource(R.string.email),
+                    placeholder = stringResource(R.string.example_email),
+                    isReadOnly = !isNetworkAvailable
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.password),
-                        style = userCredentials,
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .padding(start = 16.dp)
-                    )
-                }
-                OutlinedTextField(
+                PasswordTextField(
                     value = password,
                     onValueChange = { password = it },
-                    label = {
-                        Text(
-                            text = stringResource(R.string.example_password),
-                            style = enterText,
-                            modifier = Modifier
-                                .alpha(0.41f)
-                                .width(139.dp)
-                                .height(20.dp))
-                            },
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(55.dp),
-                    shape = RoundedCornerShape(50.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Brown,
-                        unfocusedBorderColor = LightBrown,
-                        backgroundColor = LightGray,
-                        cursorColor = LightBrown,
-                        textColor = LightBrown
-                    ),
-                    readOnly = !isNetworkAvailable
+                    label = stringResource(R.string.password),
+                    placeholder = stringResource(R.string.example_password),
+                    isReadOnly = !isNetworkAvailable
                 )
-
-                signUpState?.let { result ->
-                    when {
-                        result.isSuccess -> {
-                            LaunchedEffect(Unit) {
-                                onNavigateToWordScreen()
-                            }
-                        }
-                        result.isFailure -> {
-                            Text(
-                                text = "Sign-up failed: ${result.exceptionOrNull()?.message}",
-                                color = Red,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
-                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                OutlinedButton(
+                CustomButton(
+                    text = stringResource(R.string.signup),
+                    isEnabled = isNetworkAvailable && !isLoading,
                     onClick = {
                         if(!isLoading) {
                             when {
-                                !isValidEmail(email) -> {
-                                    errorMessage = context.getString(R.string.invalid_email)
-                                }
+                                 !isValidEmail(email) -> {
+                                     errorMessage = context.getString(R.string.invalid_email)
+                                 }
 
-                                !isValidPassword(password) -> {
-                                    errorMessage = context.getString(R.string.invalid_password)
-                                }
+                                 !isValidPassword(password) -> {
+                                     errorMessage = context.getString(R.string.invalid_password)
+                                 }
 
-                                else -> {
-                                    errorMessage = ""
-                                    val user = SignUpRequest(firstName, lastName, email, password)
-                                    viewModel.signUp(user) {
-                                        onNavigateToWordScreen()
-
-                                    }
-                                }
+                                 else -> {
+                                     errorMessage = ""
+                                     val user = SignUpRequest(firstName, lastName, email, password)
+                                     viewModel.signUp(user, context) {
+                                         onNavigateToWordScreen()
+                                     }
+                                 }
                             }
                         }
-                    } ,
-                    border = BorderStroke(1.dp, Brown),
-                    shape = RoundedCornerShape(size = 39.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Beige, contentColor = Brown),
-                    modifier = Modifier
-                        .width(277.dp)
-                        .height(48.dp),
-                    enabled = isNetworkAvailable && !isLoading
-                ) {
+                    }
+                )
+                if (errorMessage.isNotEmpty()) {
                     Text(
-                        text = stringResource(R.string.signup),
-                        style = entranceButton
+                        text = errorMessage,
+                        style = errorMessageStyle
                     )
                 }
-
                 if (isLoading) {
-                    CircularProgressIndicator(
-                        color = LightBrown,
+                    CustomProgressIndicator(
                         modifier = Modifier.padding(top = 16.dp)
                     )
                 }

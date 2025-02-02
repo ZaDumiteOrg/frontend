@@ -1,14 +1,17 @@
 package com.example.zadumite_frontend.ui.signup
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.zadumite_frontend.R
 import com.example.zadumite_frontend.data.model.user.SignUpRequest
 import com.example.zadumite_frontend.data.model.user.SignUpResponse
 import com.example.zadumite_frontend.domain.SignUpUseCase
 import com.example.zadumite_frontend.utils.token.TokenUtils
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class SignUpViewModel(private val signUpUseCase: SignUpUseCase) : ViewModel() {
     private val _signUpState = MutableLiveData<Result<SignUpResponse>>()
@@ -17,7 +20,7 @@ class SignUpViewModel(private val signUpUseCase: SignUpUseCase) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    fun signUp(request: SignUpRequest, onResult: (Int?) -> Unit) {
+    fun signUp(request: SignUpRequest, context: Context, onResult: (Int?) -> Unit) {
         _isLoading.postValue(true)
         viewModelScope.launch {
             try {
@@ -34,6 +37,15 @@ class SignUpViewModel(private val signUpUseCase: SignUpUseCase) : ViewModel() {
                 }
 
                 onResult(userId)
+            }catch (e: HttpException) {
+                val errorMessage = when (e.code()) {
+                    400 -> context.getString(R.string.error_invalid_signup_data)
+                    409 -> context.getString(R.string.error_email_already_registered)
+                    500 -> context.getString(R.string.error_server)
+                    else -> context.getString(R.string.signup_failed)
+                }
+                _signUpState.postValue(Result.failure(Exception(errorMessage)))
+                onResult(null)
             } catch (e: Exception) {
                 _signUpState.postValue(Result.failure(e))
                 onResult(null)

@@ -26,6 +26,7 @@ fun ZaDumiteScaffold(
     onNavigateToHome: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
+
     val context = LocalContext.current
     val title = context.getString(R.string.app_title)
 
