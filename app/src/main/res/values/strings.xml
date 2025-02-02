@@ -34,4 +34,11 @@
     <string name="no_internet_exception">No internet connection</string>
     <string name="role_exception">Failed to decode role</string>
     <string name="connection_losing">Слаба връзка с интернет</string>
+    <string name="error_invalid_credentials">Невалиден имейл или парола. Моля опитайте отново.</string>
+    <string name="error_unexpected">Възникна неочаквана грешка. Моля опитайте отново.</string>
+    <string name="error_server">Сървърна грешка. Моля опитайте отново по-късно.</string>
+    <string name="wrong_email">Грешен имейл адрес. Моля опитайте отново.</string>
+    <string name="wrong_password">Грешна парола. Моля опитайте отново.</string>
+    <string name="error_invalid_signup_data">Навалидни данни.</string>
+    <string name="error_email_already_registered">Има регистриран акаунт с дадения имейл.</string>
 </resources>
