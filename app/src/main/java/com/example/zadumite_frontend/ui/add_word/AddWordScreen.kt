@@ -39,20 +39,35 @@ import org.koin.androidx.compose.koinViewModel
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import com.example.zadumite_frontend.network.monitor.ConnectivityObserver
+import com.example.zadumite_frontend.network.monitor.NetworkViewModel
 
 @Composable
 fun AddWordScreen(
-    viewModel: AddWordViewModel = koinViewModel()
+    viewModel: AddWordViewModel = koinViewModel(),
+    networkViewModel: NetworkViewModel = koinViewModel()
 ) {
     var word by remember { mutableStateOf("") }
     var example by remember { mutableStateOf("") }
     var definition by remember { mutableStateOf("") }
     var synonym by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf(                   "") }
+    var errorMessage by remember { mutableStateOf("") }
 
     val addWordResult by viewModel.addWordResult.observeAsState()
     val isLoading by viewModel.isLoading.observeAsState(initial = false)
     val context = LocalContext.current
+    val networkStatus by networkViewModel.networkStatus.collectAsState()
+    val isNetworkAvailable = networkStatus == ConnectivityObserver.Status.Available
+
+    LaunchedEffect(networkStatus) {
+        if (networkStatus == ConnectivityObserver.Status.Lost ||
+            networkStatus == ConnectivityObserver.Status.Unavailable
+        ) {
+            Toast.makeText(context, context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -89,7 +104,8 @@ fun AddWordScreen(
                     unfocusedBorderColor = LightBrown,
                     cursorColor = LightBrown,
                     focusedTextColor = LightBrown
-                )
+                ),
+                readOnly = !isNetworkAvailable
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -110,7 +126,8 @@ fun AddWordScreen(
                     unfocusedBorderColor = LightBrown,
                     cursorColor = LightBrown,
                     focusedTextColor = LightBrown
-                )
+                ),
+                readOnly = !isNetworkAvailable
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -131,7 +148,8 @@ fun AddWordScreen(
                     unfocusedBorderColor = LightBrown,
                     cursorColor = LightBrown,
                     focusedTextColor = LightBrown
-                )
+                ),
+                readOnly = !isNetworkAvailable
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -152,7 +170,8 @@ fun AddWordScreen(
                     unfocusedBorderColor = LightBrown,
                     cursorColor = LightBrown,
                     focusedTextColor = LightBrown
-                )
+                ),
+                readOnly = !isNetworkAvailable
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -171,7 +190,8 @@ fun AddWordScreen(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Beige,
                     contentColor = Brown
-                )
+                ),
+                enabled = isNetworkAvailable && !isLoading
             ) {
                 Text(
                     text = stringResource(R.string.add_word),

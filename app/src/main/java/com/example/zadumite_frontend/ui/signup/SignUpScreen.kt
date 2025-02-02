@@ -1,5 +1,6 @@
 package com.example.zadumite_frontend.ui.signup
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -44,12 +46,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.zadumite_frontend.R
 import com.example.zadumite_frontend.data.model.user.SignUpRequest
+import com.example.zadumite_frontend.network.monitor.ConnectivityObserver
+import com.example.zadumite_frontend.network.monitor.NetworkViewModel
 import com.example.zadumite_frontend.ui.theme.Beige
 import com.example.zadumite_frontend.ui.theme.Brown
 import com.example.zadumite_frontend.ui.theme.LightBrown
 import com.example.zadumite_frontend.ui.theme.LightGray
 import com.example.zadumite_frontend.ui.theme.Red
 import com.example.zadumite_frontend.ui.theme.White
+import com.example.zadumite_frontend.ui.theme.Yellow
 import com.example.zadumite_frontend.ui.theme.enterText
 import com.example.zadumite_frontend.ui.theme.entranceButton
 import com.example.zadumite_frontend.ui.theme.userCredentials
@@ -63,6 +68,7 @@ fun SignUpScreen(
     onNavigateBack: () -> Unit,
     onNavigateToWordScreen: () -> Unit,
     viewModel: SignUpViewModel = koinViewModel(),
+    networkViewModel: NetworkViewModel = koinViewModel()
 ) {
 
     var firstName by remember {
@@ -88,6 +94,17 @@ fun SignUpScreen(
     val context = LocalContext.current
     val signUpState by viewModel.signUpState.observeAsState()
     val isLoading by viewModel.isLoading.observeAsState(initial = false)
+    val networkStatus by networkViewModel.networkStatus.collectAsState()
+    val isNetworkAvailable = networkStatus == ConnectivityObserver.Status.Available
+
+    LaunchedEffect(networkStatus) {
+        if (networkStatus == ConnectivityObserver.Status.Lost ||
+            networkStatus == ConnectivityObserver.Status.Unavailable
+        ) {
+            Toast.makeText(context, context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     Box(
         modifier = Modifier
@@ -113,7 +130,12 @@ fun SignUpScreen(
                     )
                 }
             }
-
+            when (networkStatus) {
+                ConnectivityObserver.Status.Available -> Unit
+                ConnectivityObserver.Status.Losing -> Text(text = stringResource(R.string.connection_losing), color = Yellow)
+                ConnectivityObserver.Status.Lost -> Text(text = stringResource(R.string.no_internet_connection), color = Red)
+                ConnectivityObserver.Status.Unavailable -> Text(text = stringResource(R.string.no_internet_connection), color = Red)
+            }
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -154,7 +176,8 @@ fun SignUpScreen(
                         backgroundColor = LightGray,
                         cursorColor = LightBrown,
                         textColor = LightBrown
-                    )
+                    ),
+                    readOnly = !isNetworkAvailable
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -192,7 +215,8 @@ fun SignUpScreen(
                         backgroundColor = LightGray,
                         cursorColor = LightBrown,
                         textColor = LightBrown
-                    )
+                    ),
+                    readOnly = !isNetworkAvailable
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -232,7 +256,8 @@ fun SignUpScreen(
                         backgroundColor = LightGray,
                         cursorColor = LightBrown,
                         textColor = LightBrown
-                    )
+                    ),
+                    readOnly = !isNetworkAvailable
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -274,7 +299,8 @@ fun SignUpScreen(
                         backgroundColor = LightGray,
                         cursorColor = LightBrown,
                         textColor = LightBrown
-                    )
+                    ),
+                    readOnly = !isNetworkAvailable
                 )
 
                 signUpState?.let { result ->
@@ -298,19 +324,23 @@ fun SignUpScreen(
 
                 OutlinedButton(
                     onClick = {
-                        when {
-                            !isValidEmail(email) -> {
-                                errorMessage = context.getString(R.string.invalid_email)
-                            }
-                            !isValidPassword(password) -> {
-                                errorMessage = context.getString(R.string.invalid_password)
-                            }
-                            else -> {
-                                errorMessage = ""
-                                val user = SignUpRequest(firstName, lastName, email, password)
-                                viewModel.signUp(user) {
+                        if(!isLoading) {
+                            when {
+                                !isValidEmail(email) -> {
+                                    errorMessage = context.getString(R.string.invalid_email)
+                                }
+
+                                !isValidPassword(password) -> {
+                                    errorMessage = context.getString(R.string.invalid_password)
+                                }
+
+                                else -> {
+                                    errorMessage = ""
+                                    val user = SignUpRequest(firstName, lastName, email, password)
+                                    viewModel.signUp(user) {
                                         onNavigateToWordScreen()
 
+                                    }
                                 }
                             }
                         }
@@ -320,7 +350,8 @@ fun SignUpScreen(
                     colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Beige, contentColor = Brown),
                     modifier = Modifier
                         .width(277.dp)
-                        .height(48.dp)
+                        .height(48.dp),
+                    enabled = isNetworkAvailable && !isLoading
                 ) {
                     Text(
                         text = stringResource(R.string.signup),

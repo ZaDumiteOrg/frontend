@@ -1,6 +1,5 @@
 package com.example.zadumite_frontend.ui.login
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -30,6 +29,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -45,11 +45,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.zadumite_frontend.MainActivity
 import com.example.zadumite_frontend.R
+import com.example.zadumite_frontend.network.monitor.ConnectivityObserver
+import com.example.zadumite_frontend.network.monitor.NetworkViewModel
 import com.example.zadumite_frontend.ui.theme.Beige
 import com.example.zadumite_frontend.ui.theme.Brown
 import com.example.zadumite_frontend.ui.theme.LightBrown
 import com.example.zadumite_frontend.ui.theme.LightGray
+import com.example.zadumite_frontend.ui.theme.Red
 import com.example.zadumite_frontend.ui.theme.White
+import com.example.zadumite_frontend.ui.theme.Yellow
 import com.example.zadumite_frontend.ui.theme.enterText
 import com.example.zadumite_frontend.ui.theme.entranceButton
 import com.example.zadumite_frontend.ui.theme.errorMessageStyle
@@ -64,7 +68,8 @@ fun LogInScreen(
     onNavigateBack: ()-> Unit,
     onNavigateToWordScreen: ()-> Unit,
     onNavigateToAddWordScreen: ()-> Unit,
-    viewModel: LogInViewModel = koinViewModel()
+    logInViewModel: LogInViewModel = koinViewModel(),
+    networkViewModel: NetworkViewModel = koinViewModel()
 ) {
     var email by remember {
         mutableStateOf("")
@@ -80,20 +85,29 @@ fun LogInScreen(
 
     val context = LocalContext.current
 
-    val loginResult by viewModel.loginResult.observeAsState()
-    val isLoading by viewModel.isLoading.observeAsState(initial = false)
+    val loginResult by logInViewModel.loginResult.observeAsState()
+    val isLoading by logInViewModel.isLoading.observeAsState(initial = false)
+    val networkStatus by networkViewModel.networkStatus.collectAsState()
+    val isNetworkAvailable = networkStatus == ConnectivityObserver.Status.Available
 
     LaunchedEffect(loginResult) {
         loginResult?.let { result ->
             result.fold(
                 onSuccess = {
-                    Toast.makeText(context, "Login Successful!", Toast.LENGTH_SHORT).show()
                     onNavigateToWordScreen()
                 },
                 onFailure = { exception ->
                     errorMessage = exception.message ?: context.getString(R.string.login_failed)
                 }
             )
+        }
+    }
+
+    LaunchedEffect(networkStatus) {
+        if (networkStatus == ConnectivityObserver.Status.Lost ||
+            networkStatus == ConnectivityObserver.Status.Unavailable
+        ) {
+            Toast.makeText(context, context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -107,6 +121,7 @@ fun LogInScreen(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -120,6 +135,12 @@ fun LogInScreen(
                         tint = Brown
                     )
                 }
+            }
+            when (networkStatus) {
+                ConnectivityObserver.Status.Available -> Unit
+                ConnectivityObserver.Status.Losing -> Text(text = stringResource(R.string.connection_losing), color =Yellow)
+                ConnectivityObserver.Status.Lost -> Text(text = stringResource(R.string.no_internet_connection), color = Red)
+                ConnectivityObserver.Status.Unavailable -> Text(text = stringResource(R.string.no_internet_connection), color = Red)
             }
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -154,6 +175,7 @@ fun LogInScreen(
                                 .height(20.dp)
                         )
                     },
+
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(55.dp),
@@ -164,7 +186,8 @@ fun LogInScreen(
                         backgroundColor = LightGray,
                         cursorColor = LightBrown,
                         textColor = LightBrown
-                    )
+                    ),
+                    readOnly = !isNetworkAvailable
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -207,45 +230,46 @@ fun LogInScreen(
                         backgroundColor = LightGray,
                         cursorColor = LightBrown,
                         textColor = LightBrown
-                    )
+                    ),
+                    readOnly = !isNetworkAvailable
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedButton(
                     onClick = {
-                        when {
-                            !isValidEmail(email) -> {
-                                errorMessage = context.getString(R.string.invalid_email)
-                            }
-                            !isValidPassword(password) -> {
-                                errorMessage = context.getString(R.string.invalid_password)
-                            }
-                            else -> {
-                                errorMessage = ""
-                                viewModel.logIn(email, password) { role ->
-                                    if (role == null) {
-                                        Log.e("Login", "Failed to retrieve role")
-                                        errorMessage = context.getString(R.string.login_failed)
-                                        return@logIn
-                                    }
+                        if(!isLoading) {
+                            when {
+                                !isValidEmail(email) -> {
+                                    errorMessage = context.getString(R.string.invalid_email)
+                                }
 
-                                    Log.d("Login", "Role: $role")
+                                !isValidPassword(password) -> {
+                                    errorMessage = context.getString(R.string.invalid_password)
+                                }
 
-                                    when (role) {
-                                        "admin" -> {
-                                            Log.d("Login", "Navigating to Add Word Screen")
-                                            onNavigateToAddWordScreen()
+                                else -> {
+                                    errorMessage = ""
+                                    logInViewModel.logIn(email, password) { role ->
+                                        if (role == null) {
+                                            errorMessage = context.getString(R.string.login_failed)
+                                            return@logIn
                                         }
-                                        else -> {
-                                            Log.d("Login", "Navigating to Word Screen")
-                                            onNavigateToWordScreen()
-                                            (context as? MainActivity)?.requestNotificationPermission()
+
+
+                                        when (role) {
+                                            "admin" -> {
+                                                onNavigateToAddWordScreen()
+                                            }
+
+                                            else -> {
+                                                onNavigateToWordScreen()
+                                                (context as? MainActivity)?.requestNotificationPermission()
+                                            }
                                         }
                                     }
                                 }
                             }
-
                         }
                     } ,
                     border = BorderStroke(1.dp, Brown),
@@ -256,7 +280,8 @@ fun LogInScreen(
                     ),
                     modifier = Modifier
                         .width(277.dp)
-                        .height(48.dp)
+                        .height(48.dp),
+                    enabled = isNetworkAvailable && !isLoading
                 ) {
                     Text(
                         text = stringResource(R.string.login),
