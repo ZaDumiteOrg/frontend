@@ -1,5 +1,6 @@
 package com.example.zadumite_frontend.ui.user_words
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,15 +30,35 @@ import com.example.zadumite_frontend.ui.theme.usersWord
 import com.example.zadumite_frontend.ui.theme.usersWordExample
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.runtime.livedata.observeAsState
-
+import androidx.compose.ui.platform.LocalContext
+import com.example.zadumite_frontend.network.monitor.ConnectivityObserver
+import com.example.zadumite_frontend.network.monitor.NetworkViewModel
 
 @Composable
-fun UserWordsScreen(viewModel: UserWordsViewModel = koinViewModel()) {
+fun UserWordsScreen(
+    viewModel: UserWordsViewModel = koinViewModel(),
+    networkViewModel: NetworkViewModel = koinViewModel()
+) {
+    val context = LocalContext.current
     val words by viewModel.userWords.observeAsState(emptyList())
     val loading by viewModel.loading.observeAsState(false)
+    val networkStatus by networkViewModel.networkStatus.collectAsState()
+    val isNetworkAvailable = networkStatus == ConnectivityObserver.Status.Available
 
     LaunchedEffect(Unit) {
-        viewModel.fetchUserWords()
+        if (isNetworkAvailable) {
+            viewModel.fetchUserWords()
+        }
+    }
+
+    LaunchedEffect(isNetworkAvailable) {
+        if (!isNetworkAvailable) {
+            Toast.makeText(
+                context,
+                context.getString(R.string.no_internet_connection),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     Box(
@@ -48,8 +70,10 @@ fun UserWordsScreen(viewModel: UserWordsViewModel = koinViewModel()) {
             loading -> {
                 CircularProgressIndicator(
                     color = LightBrown,
-                    modifier = Modifier.align(Alignment.Center))
+                    modifier = Modifier.align(Alignment.Center)
+                )
             }
+
             words.isNotEmpty() -> {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -83,6 +107,7 @@ fun UserWordsScreen(viewModel: UserWordsViewModel = koinViewModel()) {
                     }
                 }
             }
+
             else -> {
                 Text(
                     text = stringResource(R.string.no_words_error),

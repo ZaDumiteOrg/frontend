@@ -20,7 +20,6 @@ class ZaDumiteApplication : Application()  {
             androidContext(this@ZaDumiteApplication)
             modules(appModule)
             printLogger(Level.DEBUG)
-            println("Loaded Koin Modules: $appModule")
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

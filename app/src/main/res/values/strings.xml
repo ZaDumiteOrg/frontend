@@ -21,7 +21,17 @@
     <string name="word_of_week">Дума на седмицата</string>
     <string name="word_description">Описание</string>
     <string name="word_example">Примерно изречение</string>
+    <string name="synonym">Синоним (незадължително поле)</string>
     <string name="words">Думи</string>
+    <string name="word">Дума</string>
     <string name="profile">Профил</string>
     <string name="no_words_error">Няма намерени думи</string>
+    <string name="add_word">Добавяне</string>
+    <string name="add_word_error">Всички полета освен синоним са задължителни</string>
+    <string name="successfully_added_word">Успешно добавена дума!</string>
+    <string name="error_adding_wrord">Неуспешно добавяне на дума</string>
+    <string name="no_internet_connection">Няма връзка с интернет</string>
+    <string name="no_internet_exception">No internet connection</string>
+    <string name="role_exception">Failed to decode role</string>
+    <string name="connection_losing">Слаба връзка с интернет</string>
 </resources>
