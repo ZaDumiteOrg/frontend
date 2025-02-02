@@ -54,8 +54,7 @@ val enterText: TextStyle
     @Composable
     get() {
         return TextStyle(
-            fontSize = 16.sp,
-            lineHeight = 20.11.sp,
+            fontSize = 14.sp,
             fontFamily = FontFamily(Font(R.font.alegreya)),
             fontWeight = FontWeight(500),
             color = Brown,
@@ -116,7 +115,7 @@ val wordDescription: TextStyle
             lineHeight = 25.14.sp,
             fontFamily = FontFamily(Font(R.font.alegreya)),
             fontWeight = FontWeight(400),
-            color = LightBrown,
+            color = LightBrown
         )
     }
 
@@ -128,7 +127,7 @@ val wordExample: TextStyle
             lineHeight = 25.14.sp,
             fontFamily = FontFamily(Font(R.font.alegreya)),
             fontWeight = FontWeight(500),
-            color = Brown,
+            color = Brown
         )
     }
 
@@ -140,7 +139,7 @@ val usersWord: TextStyle
             lineHeight = 20.11.sp,
             fontFamily = FontFamily(Font(R.font.alegreya)),
             fontWeight = FontWeight(500),
-            color = Brown,
+            color = Brown
         )
     }
 
@@ -152,6 +151,6 @@ val usersWordExample: TextStyle
             lineHeight = 17.6.sp,
             fontFamily = FontFamily(Font(R.font.alegreya)),
             fontWeight = FontWeight(400),
-            color = Brown,
+            color = Brown
         )
     }
