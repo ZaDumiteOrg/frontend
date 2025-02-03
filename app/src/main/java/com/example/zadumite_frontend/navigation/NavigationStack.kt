@@ -7,6 +7,7 @@ import com.example.zadumite_frontend.ui.signup.SignUpScreen
 import com.example.zadumite_frontend.StartScreen
 import com.example.zadumite_frontend.ui.add_word.AddWordScreen
 import com.example.zadumite_frontend.ui.login.LogInScreen
+import com.example.zadumite_frontend.ui.profile.ProfileScreen
 import com.example.zadumite_frontend.ui.scaffold.ZaDumiteScaffold
 import com.example.zadumite_frontend.ui.user_words.UserWordsScreen
 import com.example.zadumite_frontend.ui.word.WordOfTheWeekScreen
@@ -54,6 +55,11 @@ fun NavigationStack() {
                         navController.navigate(Screen.Word.route) {
                             popUpTo(Screen.Word.route) { inclusive = false }
                         }
+                    },
+                    onNavigateToProfile = {
+                        navController.navigate(Screen.Profile.route) {
+                            popUpTo(Screen.Profile.route) { inclusive = false }
+                        }
                     }
                 ) {
                     WordOfTheWeekScreen()
@@ -75,11 +81,40 @@ fun NavigationStack() {
                     navController.navigate(Screen.Word.route) {
                         popUpTo(Screen.Word.route) { inclusive = false }
                     }
+                },
+                onNavigateToProfile = {
+                    navController.navigate(Screen.Profile.route) {
+                        popUpTo(Screen.Profile.route) { inclusive = false }
+                    }
                 }
             ) {
                 UserWordsScreen()
             }
         }
-
+        composable(route = Screen.Profile.route) {
+            val currentRoute = navController.currentBackStackEntry?.destination?.route
+            ZaDumiteScaffold(
+                currentRoute = currentRoute,
+                onNavigateToWords = {
+                    navController.navigate(Screen.UserWords.route) {
+                    popUpTo(Screen.Word.route) { inclusive = false }
+                    }
+                },
+                onNavigateToHome = {
+                    navController.navigate(Screen.Word.route) {
+                    popUpTo(Screen.Word.route) { inclusive = false }
+                    }
+                },
+                onNavigateToProfile = {
+                    navController.navigate(Screen.Profile.route) {
+                        popUpTo(Screen.Profile.route) { inclusive = false }
+                    }
+                }
+            ) {
+                ProfileScreen(
+                    onNavigateToStartPage = { navController.navigate(Screen.Start.route) }
+                )
+            }
+        }
     }
 }
