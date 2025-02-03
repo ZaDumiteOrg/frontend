@@ -41,4 +41,8 @@
     <string name="wrong_password">Грешна парола. Моля опитайте отново.</string>
     <string name="error_invalid_signup_data">Навалидни данни.</string>
     <string name="error_email_already_registered">Има регистриран акаунт с дадения имейл.</string>
+    <string name="logout">Излизане от профила</string>
+    <string name="my_profile">Моят профил</string>
+    <string name="error_occurred">Възникна грешка</string>
+    <string name="failed_fetching_user">Възникна грешка при извличане на потребителски профил. Моля опитайте отново по-късно.</string>
 </resources>
