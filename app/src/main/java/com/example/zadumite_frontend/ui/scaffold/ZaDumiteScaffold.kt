@@ -24,6 +24,7 @@ fun ZaDumiteScaffold(
     currentRoute: String?,
     onNavigateToWords: () -> Unit,
     onNavigateToHome: () -> Unit,
+    onNavigateToProfile: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
 
@@ -56,7 +57,8 @@ fun ZaDumiteScaffold(
                 BottomNavigationBar(
                     currentRoute = currentRoute,
                     onNavigateToWords = onNavigateToWords,
-                    onNavigateToHome = onNavigateToHome
+                    onNavigateToHome = onNavigateToHome,
+                    onNavigateToProfile = onNavigateToProfile
                 )
             }
         }

@@ -154,3 +154,15 @@ val usersWordExample: TextStyle
             color = Brown
         )
     }
+
+val myProfile: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 24.sp,
+            lineHeight = 30.17.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(500),
+            color = Brown,
+        )
+    }
