@@ -128,7 +128,7 @@ dependencies {
     // Mockito for mocking
     testImplementation ("org.mockito:mockito-core:4.11.0")
     testImplementation ("org.mockito:mockito-inline:4.11.0")
-
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:4.1.0")
 
     // Coroutines Test library for testing suspend functions
     testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
