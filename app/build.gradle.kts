@@ -122,4 +122,15 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2025.01.01"))
     implementation ("androidx.compose.material:material-icons-extended")
 
+    // JUnit 5 for unit testing
+    testImplementation ("org.junit.jupiter:junit-jupiter:5.10.0")
+
+    // Mockito for mocking
+    testImplementation ("org.mockito:mockito-core:4.11.0")
+    testImplementation ("org.mockito:mockito-inline:4.11.0")
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:4.1.0")
+
+    // Coroutines Test library for testing suspend functions
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
 }
