@@ -53,7 +53,7 @@ fun ZaDumiteScaffold(
             }
         },
         bottomBar = {
-            if (currentRoute in listOf(Screen.Word.route, Screen.UserWords.route)) {
+            if (currentRoute in listOf(Screen.Word.route, Screen.UserWords.route, Screen.Profile.route)) {
                 BottomNavigationBar(
                     currentRoute = currentRoute,
                     onNavigateToWords = onNavigateToWords,
