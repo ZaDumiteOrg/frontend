@@ -27,11 +27,11 @@ fun BottomNavigationBar(
         contentColor = Brown
     ) {
         BottomNavigationItem(
-            selected = currentRoute?.startsWith("user_words_screen") == true,
+            selected = currentRoute == Screen.UserWords.route,
             onClick = {
                 onNavigateToWords()
             },
-            icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Words") },
+            icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = stringResource(R.string.word)) },
             label = { Text(text = stringResource(R.string.words)) }
         )
         BottomNavigationItem(
@@ -39,14 +39,14 @@ fun BottomNavigationBar(
             onClick = {
                 onNavigateToHome()
             },
-            icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
+            icon = { Icon(Icons.Default.Home, contentDescription = stringResource(R.string.home)) },
         )
         BottomNavigationItem(
             selected = currentRoute == Screen.Profile.route,
             onClick = {
                 onNavigateToProfile()
             },
-            icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
+            icon = { Icon(Icons.Default.Person, contentDescription = stringResource(R.string.profile)) },
             label = { Text(text = stringResource(R.string.profile)) }
         )
     }
