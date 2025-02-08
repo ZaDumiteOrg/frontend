@@ -1,44 +1,47 @@
 package com.example.zadumite_frontend.ui.signup
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.content.Context
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.zadumite_frontend.R
 import com.example.zadumite_frontend.data.model.user.SignUpRequest
 import com.example.zadumite_frontend.data.model.user.SignUpResponse
-import com.example.zadumite_frontend.data.repository.AuthRepository
+import com.example.zadumite_frontend.domain.SignUpUseCase
 import com.example.zadumite_frontend.utils.token.TokenUtils
 import kotlinx.coroutines.launch
 
-class SignUpViewModel(private val repository: AuthRepository) : ViewModel() {
-    private val _signUpState = MutableLiveData<Result<SignUpResponse>>()
-    val signUpState: LiveData<Result<SignUpResponse>> get() = _signUpState
+class SignUpViewModel(private val signUpUseCase: SignUpUseCase) : ViewModel() {
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
+    private val _signUpState = mutableStateOf<Result<SignUpResponse>?>(null)
+    val signUpState: State<Result<SignUpResponse>?> get() = _signUpState
 
-    fun signUp(request: SignUpRequest, onResult: (Int?) -> Unit) {
-        _isLoading.postValue(true)
+    private val _isLoading = mutableStateOf(false)
+    val isLoading: State<Boolean> = _isLoading
+
+    fun signUp(request: SignUpRequest, context: Context, onResult: (Int?) -> Unit) {
+        _isLoading.value = true
         viewModelScope.launch {
             try {
-                val response = repository.signUp(request)
+                val response = signUpUseCase(request)
 
                 val userId = response.accessToken.let { token ->
                     TokenUtils.decodeUserIdFromToken(token)
                 }
 
                 if (userId != null) {
-                    _signUpState.postValue(Result.success(response))
+                    _signUpState.value = Result.success(response)
                 } else {
-                    _signUpState.postValue(Result.failure(Exception("Failed to decode user ID")))
+                    _signUpState.value = Result.failure(Exception(context.getString(R.string.failed_decode_id)))
                 }
 
                 onResult(userId)
             } catch (e: Exception) {
-                _signUpState.postValue(Result.failure(e))
+                _signUpState.value = Result.failure(e)
                 onResult(null)
             } finally {
-                _isLoading.postValue(false)
+                _isLoading.value = false
             }
         }
     }

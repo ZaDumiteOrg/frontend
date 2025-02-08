@@ -24,8 +24,10 @@ fun ZaDumiteScaffold(
     currentRoute: String?,
     onNavigateToWords: () -> Unit,
     onNavigateToHome: () -> Unit,
+    onNavigateToProfile: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
+
     val context = LocalContext.current
     val title = context.getString(R.string.app_title)
 
@@ -51,11 +53,12 @@ fun ZaDumiteScaffold(
             }
         },
         bottomBar = {
-            if (currentRoute in listOf(Screen.Word.route, Screen.UserWords.route)) {
+            if (currentRoute in listOf(Screen.Word.route, Screen.UserWords.route, Screen.Profile.route)) {
                 BottomNavigationBar(
                     currentRoute = currentRoute,
                     onNavigateToWords = onNavigateToWords,
-                    onNavigateToHome = onNavigateToHome
+                    onNavigateToHome = onNavigateToHome,
+                    onNavigateToProfile = onNavigateToProfile
                 )
             }
         }

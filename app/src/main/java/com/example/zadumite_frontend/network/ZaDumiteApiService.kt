@@ -4,6 +4,7 @@ import com.example.zadumite_frontend.data.model.token.TokenResponse
 import com.example.zadumite_frontend.data.model.user.LogInRequest
 import com.example.zadumite_frontend.data.model.user.SignUpRequest
 import com.example.zadumite_frontend.data.model.user.SignUpResponse
+import com.example.zadumite_frontend.data.model.user.User
 import com.example.zadumite_frontend.data.model.word.Word
 import retrofit2.Response
 import retrofit2.http.Body
@@ -23,6 +24,9 @@ interface ZaDumiteApiService {
 
     @GET("user/{id}/words")
     suspend fun getUserWords(@Path("id") userId: Int): List<Word>
+
+    @GET("user/{id}")
+    suspend fun getUserById(@Path("id") userId: Int): User
 
     @POST("word")
     suspend fun addWord(@Body request: Word): Response<Word>

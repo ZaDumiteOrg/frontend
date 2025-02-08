@@ -26,7 +26,6 @@ class AuthRepository(
                 } else {
                     throw Exception("No user id: ${response.code()} - ${response.message()} - ${response.errorBody()?.string()}")
                 }
-                //return response.body() ?: throw Exception("Empty response body")
                 return signUpResponse
             } else {
                 throw Exception("Error signing up: ${response.code()} - ${response.message()}")

@@ -1,42 +1,35 @@
 package com.example.zadumite_frontend.ui.user_words
 
-import android.util.Log
+import android.content.Context
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.zadumite_frontend.data.model.word.Word
-import com.example.zadumite_frontend.network.ZaDumiteApiService
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.zadumite_frontend.data.model.token.JwtTokenManager
+import com.example.zadumite_frontend.R
+import com.example.zadumite_frontend.domain.FetchUserWordsUseCase
 import kotlinx.coroutines.launch
 
-
 class UserWordsViewModel(
-    private val apiService: ZaDumiteApiService,
-    private val userManager: JwtTokenManager
+    private val fetchUserWordsUseCase: FetchUserWordsUseCase
 ) : ViewModel() {
-    private val _userWords = MutableLiveData<List<Word>>()
-    val userWords: LiveData<List<Word>> get() = _userWords
 
-    private val _loading = MutableLiveData(false)
-    val loading: LiveData<Boolean> get() = _loading
+    private val _userWordsState = mutableStateOf<Result<List<Word>>?>(null)
+    val userWordsState: State<Result<List<Word>>?> get() = _userWordsState
 
-    private val _userId = MutableLiveData<String?>()
-    val userId: LiveData<String?> get() = _userId
+    private val _isLoading = mutableStateOf(false)
+    val isLoading: State<Boolean> = _isLoading
 
     fun fetchUserWords() {
         viewModelScope.launch {
-            _loading.value = true
+            _isLoading.value = true
             try {
-                val userId = userManager.getUserId()
-                if(userId != null) {
-                    val words = apiService.getUserWords(userId)
-                    _userWords.value = words
-                }
+                val words = fetchUserWordsUseCase()
+                _userWordsState.value = words
             } catch (e: Exception) {
-                Log.e("UserWordsViewModel", "Error fetching user words: ${e.message}")
+                _userWordsState.value = Result.failure(e)
             } finally {
-                _loading.value = false
+                _isLoading.value = false
             }
         }
     }
