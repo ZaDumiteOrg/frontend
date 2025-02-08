@@ -26,7 +26,7 @@ fun WordOfTheWeekScreen(
 ) {
 
     val word = viewModel.wordOfTheWeek.value
-    val loading = viewModel.loading.value
+    val isLoading by viewModel.isLoading
     val networkStatus by networkViewModel.networkStatus.collectAsState()
     val isNetworkAvailable = networkStatus == ConnectivityObserver.Status.Available
 
@@ -45,7 +45,7 @@ fun WordOfTheWeekScreen(
                     textAlign = TextAlign.Center
                 )
             }
-            loading -> {
+            isLoading -> {
                 CustomProgressIndicator(modifier = Modifier.padding(top = 16.dp))
             }
             word != null -> {

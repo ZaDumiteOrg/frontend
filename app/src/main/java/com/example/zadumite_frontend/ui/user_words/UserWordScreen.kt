@@ -29,7 +29,6 @@ import com.example.zadumite_frontend.ui.theme.errorMessageStyle
 import com.example.zadumite_frontend.ui.theme.usersWord
 import com.example.zadumite_frontend.ui.theme.usersWordExample
 import org.koin.androidx.compose.koinViewModel
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,8 +45,8 @@ fun UserWordsScreen(
     networkViewModel: NetworkViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
-    val words by viewModel.userWords.observeAsState(emptyList())
-    val loading by viewModel.loading.observeAsState(false)
+    val wordsState by viewModel.userWordsState
+    val loading by viewModel.isLoading
     val networkStatus by networkViewModel.networkStatus.collectAsState()
     var previousNetworkStatus by remember { mutableStateOf(networkStatus) }
 
@@ -76,7 +75,16 @@ fun UserWordsScreen(
                 CustomProgressIndicator(Modifier.align(Alignment.Center))
             }
 
-            words.isNotEmpty() -> {
+            wordsState == null -> {
+                Text(
+                    text = stringResource(R.string.no_words_error),
+                    style = errorMessageStyle,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            wordsState!!.isSuccess ->  {
+                val words =  wordsState!!.getOrNull() ?: emptyList()
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
