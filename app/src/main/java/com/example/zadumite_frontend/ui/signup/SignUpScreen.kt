@@ -1,6 +1,5 @@
 package com.example.zadumite_frontend.ui.signup
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,8 +40,8 @@ import com.example.zadumite_frontend.ui.theme.Brown
 import com.example.zadumite_frontend.ui.theme.Red
 import com.example.zadumite_frontend.ui.theme.White
 import com.example.zadumite_frontend.ui.theme.errorMessageStyle
-import com.example.zadumite_frontend.utils.validation.isValidEmail
-import com.example.zadumite_frontend.utils.validation.isValidPassword
+import com.example.zadumite_frontend.ui.utils.validation.isValidEmail
+import com.example.zadumite_frontend.ui.utils.validation.isValidPassword
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -76,18 +74,10 @@ fun SignUpScreen(
     }
 
     val context = LocalContext.current
-    val signUpState by viewModel.signUpState.observeAsState()
-    val isLoading by viewModel.isLoading.observeAsState(initial = false)
+    val signUpState by viewModel.signUpState
+    val isLoading by viewModel.isLoading
     val networkStatus by networkViewModel.networkStatus.collectAsState()
     val isNetworkAvailable = networkStatus == ConnectivityObserver.Status.Available
-
-    LaunchedEffect(networkStatus) {
-        if (networkStatus == ConnectivityObserver.Status.Lost ||
-            networkStatus == ConnectivityObserver.Status.Unavailable
-        ) {
-            Toast.makeText(context, context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
-        }
-    }
 
     LaunchedEffect(signUpState) {
         signUpState?.let { result ->

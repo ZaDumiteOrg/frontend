@@ -1,4 +1,4 @@
-package com.example.zadumite_frontend
+package com.example.zadumite_frontend.ui.start_screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.zadumite_frontend.R
 import com.example.zadumite_frontend.ui.custom_elements.CustomButton
 import com.example.zadumite_frontend.ui.theme.White
 import com.example.zadumite_frontend.ui.theme.appTitle

@@ -5,15 +5,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,28 +31,47 @@ import com.example.zadumite_frontend.ui.theme.errorMessageStyle
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.text.style.TextAlign
 import com.example.zadumite_frontend.network.monitor.ConnectivityObserver
 import com.example.zadumite_frontend.network.monitor.NetworkViewModel
 import com.example.zadumite_frontend.ui.custom_elements.CustomButton
 import com.example.zadumite_frontend.ui.custom_elements.CustomOutlinedTextField
+import com.example.zadumite_frontend.ui.theme.Brown
 import com.example.zadumite_frontend.ui.theme.Red
 
 @Composable
 fun AddWordScreen(
+    onNavigateBack: ()-> Unit,
     viewModel: AddWordViewModel = koinViewModel(),
     networkViewModel: NetworkViewModel = koinViewModel()
 ) {
-    var word by remember { mutableStateOf("") }
-    var example by remember { mutableStateOf("") }
-    var definition by remember { mutableStateOf("") }
-    var synonym by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf("") }
+    var word by remember {
+        mutableStateOf("")
+    }
 
-    val addWordResult by viewModel.addWordResult.observeAsState()
-    val isLoading by viewModel.isLoading.observeAsState(initial = false)
+    var example by remember {
+        mutableStateOf("")
+    }
+
+    var definition by remember {
+        mutableStateOf("")
+    }
+
+    var synonym by remember {
+        mutableStateOf("")
+    }
+
+    var errorMessage by remember {
+        mutableStateOf("")
+    }
+
+    val addWordResult by viewModel.addWordState
+    val isLoading by viewModel.isLoading
     val context = LocalContext.current
     val networkStatus by networkViewModel.networkStatus.collectAsState()
     val isNetworkAvailable = networkStatus == ConnectivityObserver.Status.Available
@@ -69,6 +89,23 @@ fun AddWordScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            ) {
+                IconButton(
+                    onClick = onNavigateBack,
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back),
+                        tint = Brown
+                    )
+                }
+            }
+
             if (!isNetworkAvailable) {
                 Text(
                     text = stringResource(R.string.no_internet_connection),
@@ -85,7 +122,7 @@ fun AddWordScreen(
             CustomOutlinedTextField(
                 value = word,
                 onValueChange = { input ->
-                    if (input.all { it.isLetter() || it.isWhitespace() }) {
+                    if (input.all { it.isCyrillic() || it.isAllowedSymbol() || it.isWhitespace() }) {
                         word = input
                     }
                 },
@@ -98,7 +135,7 @@ fun AddWordScreen(
             CustomOutlinedTextField(
                 value = definition,
                 onValueChange = { input ->
-                    if (input.all { it.isLetter() || it.isWhitespace() }) {
+                    if (input.all { it.isCyrillic() || it.isAllowedSymbol() || it.isWhitespace() }) {
                         definition = input
                     } },
                 label = stringResource(R.string.word_description),
@@ -110,7 +147,7 @@ fun AddWordScreen(
             CustomOutlinedTextField(
                 value = example,
                 onValueChange = {input ->
-                    if (input.all { it.isLetter() || it.isWhitespace() }) {
+                    if (input.all { it.isCyrillic() || it.isAllowedSymbol() || it.isWhitespace() }) {
                         example = input
                     }},
                 label = stringResource(R.string.word_example),
@@ -122,7 +159,7 @@ fun AddWordScreen(
             CustomOutlinedTextField(
                 value = synonym,
                 onValueChange = { input ->
-                    if (input.all { it.isLetter() || it.isWhitespace() }) {
+                    if (input.all { it.isCyrillic() || it.isAllowedSymbol() || it.isWhitespace() }) {
                         synonym = input
                     } },
                 label = stringResource(R.string.synonym),

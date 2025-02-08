@@ -1,6 +1,7 @@
 package com.example.zadumite_frontend.ui.profile
 
 import android.content.Context
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,21 +11,23 @@ import com.example.zadumite_frontend.data.model.user.User
 import com.example.zadumite_frontend.domain.GetUserUseCase
 import com.example.zadumite_frontend.domain.LogoutUseCase
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.State
+
 
 class ProfileViewModel(
     private val getUserUseCase: GetUserUseCase,
     private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
-    private val _profileState = MutableLiveData<User?>(null)
-    val profileState: LiveData<User?> = _profileState
+    private val _profileState = mutableStateOf<User?>(null)
+    val profileState: State<User?> = _profileState
 
-    private val _logoutState = MutableLiveData<Boolean>()
+    private val _logoutState = mutableStateOf(false)
 
-    private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> = _isLoading
+    private val _isLoading = mutableStateOf(false)
+    val isLoading: State<Boolean> = _isLoading
 
-    private val _errorMessage = MutableLiveData<String?>(null)
-    val errorMessage: LiveData<String?> = _errorMessage
+    private val _errorMessage = mutableStateOf<String?>(null)
+    val errorMessage: State<String?> = _errorMessage
 
     fun fetchUserDetails(context: Context) {
         _isLoading.value = true
@@ -46,10 +49,10 @@ class ProfileViewModel(
             try {
                 logoutUseCase()
                 onLogoutSuccess()
-                _logoutState.postValue(true)
+                _logoutState.value = true
             } catch (e: Exception) {
                 _isLoading.value = false
-                _logoutState.postValue(false)
+                _logoutState.value = false
             }
         }
     }

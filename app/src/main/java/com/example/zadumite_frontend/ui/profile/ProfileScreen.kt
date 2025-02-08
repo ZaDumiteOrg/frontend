@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,9 +35,9 @@ fun ProfileScreen(
     networkViewModel: NetworkViewModel= koinViewModel()
 ) {
     val context = LocalContext.current
-    val profileState by viewModel.profileState.observeAsState()
-    val isLoading by viewModel.isLoading.observeAsState(initial = false)
-    val errorMessage by viewModel.errorMessage.observeAsState()
+    val profileState by viewModel.profileState
+    val isLoading by viewModel.isLoading
+    val errorMessage by viewModel.errorMessage
     val networkStatus by networkViewModel.networkStatus.collectAsState()
     val isNetworkAvailable = networkStatus == ConnectivityObserver.Status.Available
 
