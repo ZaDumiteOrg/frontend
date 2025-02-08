@@ -14,7 +14,7 @@ class NotificationHandler(private val context: Context) {
         val notification = NotificationCompat.Builder(context, notificationChannelID)
             .setContentTitle("Дума на седмицата")
             .setContentText("Узнай думата на седмицата!")
-            .setSmallIcon(R.drawable.ic_notification)
+            .setSmallIcon(R.drawable.notification)
             .setPriority(NotificationManager.IMPORTANCE_HIGH)
             .setAutoCancel(true)
             .build()
