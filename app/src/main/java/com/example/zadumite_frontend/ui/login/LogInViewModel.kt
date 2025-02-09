@@ -25,7 +25,6 @@ class LogInViewModel(private val logInUseCase: LogInUseCase): ViewModel() {
             try {
                 val loginRequest = LogInRequest(email, password)
                 val tokenResponse = logInUseCase(loginRequest)
-
                 val role = TokenUtils.decodeUserRoleFromToken(tokenResponse.accessToken)
 
                 if (role != null) {
