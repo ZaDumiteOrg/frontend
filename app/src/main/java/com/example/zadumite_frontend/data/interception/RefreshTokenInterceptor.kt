@@ -1,4 +1,4 @@
-package com.example.zadumite_frontend.network.interception
+package com.example.zadumite_frontend.data.interception
 
 import com.example.zadumite_frontend.data.model.token.JwtTokenManager
 import kotlinx.coroutines.runBlocking

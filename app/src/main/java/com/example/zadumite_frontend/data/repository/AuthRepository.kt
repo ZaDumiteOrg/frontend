@@ -1,6 +1,6 @@
 package com.example.zadumite_frontend.data.repository
 
-import com.example.zadumite_frontend.network.ZaDumiteApiService
+import com.example.zadumite_frontend.data.api.ZaDumiteApiService
 import com.example.zadumite_frontend.data.model.token.JwtTokenManager
 import com.example.zadumite_frontend.data.model.token.TokenResponse
 import com.example.zadumite_frontend.data.model.user.LogInRequest

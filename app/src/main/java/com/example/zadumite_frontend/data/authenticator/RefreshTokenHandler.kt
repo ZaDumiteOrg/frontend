@@ -1,8 +1,8 @@
-package com.example.zadumite_frontend.network.authenticator
+package com.example.zadumite_frontend.data.authenticator
 
 import com.example.zadumite_frontend.data.model.token.RefreshTokenRequest
 import com.example.zadumite_frontend.data.model.token.TokenResponse
-import com.example.zadumite_frontend.network.RefreshTokenService
+import com.example.zadumite_frontend.data.api.RefreshTokenService
 
 class RefreshTokenHandler(
     private val refreshTokenService: RefreshTokenService
