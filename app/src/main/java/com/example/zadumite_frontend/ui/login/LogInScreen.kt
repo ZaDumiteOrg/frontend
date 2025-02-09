@@ -72,12 +72,28 @@ fun LogInScreen(
     val isLoading by logInViewModel.isLoading
     val networkStatus by networkViewModel.networkStatus.collectAsState()
     val isNetworkAvailable = networkStatus == ConnectivityObserver.Status.Available
+    var userRole by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(userRole) {
+        when (userRole) {
+            "admin" -> {
+                onNavigateToAddWordScreen()
+            }
+            "user" -> {
+                onNavigateToWordScreen()
+                (context as? MainActivity)?.requestNotificationPermission()
+            }
+        }
+    }
+
 
     LaunchedEffect(loginState) {
         loginState?.let { result ->
             result.fold(
                 onSuccess = {
-                    onNavigateToWordScreen()
+                    if (userRole != "admin") {
+                        onNavigateToWordScreen()
+                    }
                 },
                 onFailure = { exception ->
                     errorMessage = exception.message ?: context.getString(R.string.login_failed)
@@ -85,6 +101,7 @@ fun LogInScreen(
             )
         }
     }
+
 
     Box(
         modifier = Modifier
@@ -155,42 +172,30 @@ fun LogInScreen(
                 CustomButton(
                     text = stringResource(R.string.login),
                     isEnabled = isNetworkAvailable && !isLoading,
-                    onClick = {
-                        if(!isLoading) {
-                            when {
-                                !isValidEmail(email) -> {
-                                    errorMessage = context.getString(R.string.wrong_email)
-                                }
+                ) {
+                    if (!isLoading) {
+                        when {
+                            !isValidEmail(email) -> {
+                                errorMessage = context.getString(R.string.wrong_email)
+                            }
 
-                                !isValidPassword(password) -> {
-                                    errorMessage = context.getString(R.string.wrong_password)
-                                }
+                            !isValidPassword(password) -> {
+                                errorMessage = context.getString(R.string.wrong_password)
+                            }
 
-                                else -> {
-                                    errorMessage = ""
-                                    logInViewModel.logIn(email, password, context) { role ->
-                                        if (role == null) {
-                                            errorMessage = context.getString(R.string.login_failed)
-                                            return@logIn
-                                        }
-
-
-                                        when (role) {
-                                            "admin" -> {
-                                                onNavigateToAddWordScreen()
-                                            }
-
-                                            else -> {
-                                                onNavigateToWordScreen()
-                                                (context as? MainActivity)?.requestNotificationPermission()
-                                            }
-                                        }
+                            else -> {
+                                errorMessage = ""
+                                logInViewModel.logIn(email, password, context) { role ->
+                                    if (role == null) {
+                                        errorMessage = context.getString(R.string.login_failed)
+                                    } else {
+                                        userRole = role
                                     }
                                 }
                             }
                         }
-                    } ,
-                )
+                    }
+                }
                 if (errorMessage.isNotEmpty()) {
                     Text(
                         text = errorMessage,
