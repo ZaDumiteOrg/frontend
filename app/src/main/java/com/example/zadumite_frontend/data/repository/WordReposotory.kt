@@ -2,7 +2,8 @@ package com.example.zadumite_frontend.data.repository
 
 import com.example.zadumite_frontend.data.model.token.JwtTokenManager
 import com.example.zadumite_frontend.data.model.word.Word
-import com.example.zadumite_frontend.network.ZaDumiteApiService
+import com.example.zadumite_frontend.data.api.ZaDumiteApiService
+import com.example.zadumite_frontend.utils.token.TokenUtils.decodeUserRoleFromToken
 
 class WordRepository(
     private val apiService: ZaDumiteApiService,
@@ -12,6 +13,11 @@ class WordRepository(
         val accessToken = jwtTokenDataStore.getAccessJwt()
         if (accessToken.isNullOrBlank()) {
             return Result.failure(Exception("Access token is missing."))
+        }
+
+        val userRole = decodeUserRoleFromToken(accessToken)
+        if (userRole != "admin") {
+            return Result.failure(Exception("Unauthorized: Only admins can add words."))
         }
 
         return try {

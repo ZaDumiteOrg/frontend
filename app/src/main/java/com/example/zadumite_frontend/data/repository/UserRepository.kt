@@ -2,7 +2,7 @@ package com.example.zadumite_frontend.data.repository
 
 import com.example.zadumite_frontend.data.model.token.JwtTokenManager
 import com.example.zadumite_frontend.data.model.user.User
-import com.example.zadumite_frontend.network.ZaDumiteApiService
+import com.example.zadumite_frontend.data.api.ZaDumiteApiService
 
 class UserRepository(
     private val apiService: ZaDumiteApiService,

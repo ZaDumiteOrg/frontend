@@ -1,7 +1,5 @@
 package com.example.zadumite_frontend.utils.token
 
-import android.util.Log
-
 object TokenUtils {
     fun decodeUserIdFromToken(token: String): Int? {
         return try {
@@ -20,7 +18,6 @@ object TokenUtils {
                 null
             }
         } catch (e: Exception) {
-            Log.e("TokenDecode", "Failed to decode token: ${e.message}")
             null
         }
     }
@@ -30,24 +27,18 @@ object TokenUtils {
             val parts = token.split(".")
             if (parts.size == 3) {
                 val payload = parts[1]
-                val paddedPayload = when (payload.length % 4) {
-                    2 -> "$payload=="
-                    3 -> "$payload="
-                    else -> payload
-                }
                 val decodedPayload = String(
                     android.util.Base64.decode(
-                        paddedPayload,
-                        android.util.Base64.URL_SAFE or android.util.Base64.NO_WRAP
-                    )
+                        payload, android.util.Base64.URL_SAFE or android.util.Base64.NO_WRAP
+                    ), Charsets.UTF_8
                 )
                 val json = org.json.JSONObject(decodedPayload)
-                json.optString("roles") ?: null
+                val role = json.optString("roles")
+                role.ifBlank { null }
             } else {
                 null
             }
         } catch (e: Exception) {
-            Log.e("TokenDecode", "Failed to decode token: ${e.message}")
             null
         }
     }

@@ -2,7 +2,7 @@ package com.example.zadumite_frontend.domain
 
 import com.example.zadumite_frontend.data.model.token.JwtTokenManager
 import com.example.zadumite_frontend.data.model.word.Word
-import com.example.zadumite_frontend.network.ZaDumiteApiService
+import com.example.zadumite_frontend.data.api.ZaDumiteApiService
 
 class FetchUserWordsUseCase(
     private val apiService: ZaDumiteApiService,

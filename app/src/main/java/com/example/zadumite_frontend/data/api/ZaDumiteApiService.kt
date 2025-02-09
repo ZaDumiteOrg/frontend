@@ -1,4 +1,4 @@
-package com.example.zadumite_frontend.network
+package com.example.zadumite_frontend.data.api
 
 import com.example.zadumite_frontend.data.model.token.TokenResponse
 import com.example.zadumite_frontend.data.model.user.LogInRequest

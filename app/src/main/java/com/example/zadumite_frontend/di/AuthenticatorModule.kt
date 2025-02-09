@@ -1,8 +1,8 @@
 package com.example.zadumite_frontend.di
 
-import com.example.zadumite_frontend.network.RefreshTokenService
-import com.example.zadumite_frontend.network.authenticator.AuthAuthenticator
-import com.example.zadumite_frontend.network.authenticator.RefreshTokenHandler
+import com.example.zadumite_frontend.data.api.RefreshTokenService
+import com.example.zadumite_frontend.data.authenticator.AuthAuthenticator
+import com.example.zadumite_frontend.data.authenticator.RefreshTokenHandler
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit

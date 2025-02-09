@@ -5,7 +5,7 @@ import com.example.zadumite_frontend.di.providers.provideRefreshOkHttpClient
 import com.example.zadumite_frontend.di.providers.provideRetrofit
 import com.example.zadumite_frontend.di.qualifiers.AUTHENTICATED_CLIENT
 import com.example.zadumite_frontend.di.qualifiers.TOKEN_REFRESH_CLIENT
-import com.example.zadumite_frontend.network.ZaDumiteApiService
+import com.example.zadumite_frontend.data.api.ZaDumiteApiService
 import com.example.zadumite_frontend.network.monitor.NetworkConnectivityObserver
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
