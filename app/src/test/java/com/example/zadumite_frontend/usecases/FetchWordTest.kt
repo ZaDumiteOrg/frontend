@@ -1,7 +1,7 @@
 package com.example.zadumite_frontend.usecases
 import com.example.zadumite_frontend.data.model.word.Word
 import com.example.zadumite_frontend.domain.FetchWordUseCase
-import com.example.zadumite_frontend.network.ZaDumiteApiService
+import com.example.zadumite_frontend.data.api.ZaDumiteApiService
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before

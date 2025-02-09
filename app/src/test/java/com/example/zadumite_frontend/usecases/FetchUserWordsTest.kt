@@ -2,10 +2,12 @@ package com.example.zadumite_frontend.usecases
 import com.example.zadumite_frontend.data.model.token.JwtTokenManager
 import com.example.zadumite_frontend.data.model.word.Word
 import com.example.zadumite_frontend.domain.FetchUserWordsUseCase
-import com.example.zadumite_frontend.network.ZaDumiteApiService
+import com.example.zadumite_frontend.data.api.ZaDumiteApiService
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.*
@@ -45,17 +47,16 @@ class FetchUserWordsUseCaseTest {
     }
 
     @Test
-    fun `invoke should throw Exception when userId is null`() {
-        runBlocking {
-            whenever(tokenManager.getUserId()).thenReturn(null)
+    fun `invoke should return failure when userId is null`() = runTest {
+        whenever(tokenManager.getUserId()).thenReturn(null)
 
-            val exception = assertThrows(Exception::class.java) {
-                runBlocking { fetchUserWordsUseCase() }
-            }
+        val result = fetchUserWordsUseCase()
 
-            assertEquals("User ID not found", exception.message)
-            verify(tokenManager).getUserId()
-            verify(apiService, never()).getUserWords(any())
-        }
+        assertTrue(result.isFailure)
+        assertEquals("User ID not found", result.exceptionOrNull()?.message)
+
+        verify(tokenManager).getUserId()
+
+        verify(apiService, never()).getUserWords(any())
     }
 }
