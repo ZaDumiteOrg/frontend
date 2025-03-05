@@ -49,4 +49,8 @@
     <string name="failed_decode_id">Неуспешно декодиране на идентификционниея номер на поребителя. Моля опитайте отново.</string>
     <string name="failed_fetching_words">Неуспешно извличане на думите на потребителя.</string>
     <string name="home">Начало</string>
+    <string name="logout_alert_title">Потвърдете излизането</string>
+    <string name="logout_confirm">Сигурни ли сте, че искате да излезете от профила си?</string>
+    <string name="yes">Да</string>
+    <string name="no">Връщане назад</string>
 </resources>
