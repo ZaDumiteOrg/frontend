@@ -166,3 +166,51 @@ val myProfile: TextStyle
             color = Brown,
         )
     }
+
+val questionHeader: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 24.sp,
+            lineHeight = 30.17.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(400),
+            color = Brown
+        )
+    }
+
+val questionTextStyle: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 20.sp,
+            lineHeight = 30.17.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(400),
+            color = LightBrown
+        )
+    }
+
+val answerTextStyle: TextStyle
+    @Composable
+    get() {
+        return TextStyle(
+            fontSize = 20.sp,
+            lineHeight = 30.17.sp,
+            fontFamily = FontFamily(Font(R.font.alegreya)),
+            fontWeight = FontWeight(400),
+            color = LightBrown
+        )
+    }
+
+val leaderboardHeader: TextStyle
+@Composable
+get() {
+    return TextStyle(
+        fontSize = 40.sp,
+        lineHeight = 50.28.sp,
+        fontFamily = FontFamily(Font(R.font.alegreya)),
+        fontWeight = FontWeight(800),
+        color = Brown
+    )
+}
