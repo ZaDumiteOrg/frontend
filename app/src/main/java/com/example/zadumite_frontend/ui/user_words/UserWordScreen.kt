@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -89,7 +90,7 @@ fun UserWordsScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 100.dp)
+                        .padding(top = 60.dp, bottom = 55.dp)
                 ) {
                     items(words) { word ->
                         Card(
@@ -99,12 +100,14 @@ fun UserWordsScreen(
                                 disabledContentColor = Brown,
                                 contentColor = Brown),
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp)
                         ) {
                             Column(
                                 modifier = Modifier
                                     .padding(16.dp)
-                                    .fillMaxWidth()
+                                    .fillMaxWidth(),
                             ) {
                                 Text(
                                     text = word.word,
