@@ -7,5 +7,6 @@ val appModule = listOf(
     authenticatorModule,
     repositoryModule,
     useCaseModule,
-    viewModelModule
+    viewModelModule,
+    sessionModule
 )
