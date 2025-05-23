@@ -4,9 +4,9 @@ val appModule = listOf(
     networkModule,
     jwtTokenModule,
     interceptorModule,
+    sessionModule,
     authenticatorModule,
     repositoryModule,
     useCaseModule,
-    viewModelModule,
-    sessionModule
+    viewModelModule
 )

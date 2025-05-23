@@ -19,7 +19,8 @@ val authenticatorModule = module {
     single {
         AuthAuthenticator(
             tokenManager = get(),
-            refreshTokenHandler = get()
+            refreshTokenHandler = get(),
+            sessionManager = get()
         )
     }
 }
