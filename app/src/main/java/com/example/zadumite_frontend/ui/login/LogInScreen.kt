@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.zadumite_frontend.MainActivity
@@ -45,7 +48,6 @@ import com.example.zadumite_frontend.ui.utils.validation.isValidEmail
 import com.example.zadumite_frontend.ui.utils.validation.isValidPassword
 import org.koin.androidx.compose.koinViewModel
 import com.example.zadumite_frontend.ui.custom_elements.PasswordTextField
-
 
 @Composable
 fun LogInScreen(
@@ -85,7 +87,6 @@ fun LogInScreen(
             }
         }
     }
-
 
     LaunchedEffect(loginState) {
         loginState?.let { result ->
@@ -148,13 +149,14 @@ fun LogInScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
+                    .imePadding()
             ) {
                 CustomOutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
                     label = stringResource(R.string.email),
                     placeholder = stringResource(R.string.example_email),
-                    isReadOnly = !isNetworkAvailable
+                    isReadOnly = !isNetworkAvailable,
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -164,7 +166,8 @@ fun LogInScreen(
                     onValueChange = { password = it },
                     label = stringResource(R.string.password),
                     placeholder = stringResource(R.string.example_password),
-                    isReadOnly = !isNetworkAvailable
+                    isReadOnly = !isNetworkAvailable,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
