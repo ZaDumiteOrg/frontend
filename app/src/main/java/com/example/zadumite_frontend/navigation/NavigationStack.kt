@@ -1,8 +1,10 @@
 package com.example.zadumite_frontend.navigation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.zadumite_frontend.data.model.session.LogoutNotifier
 import com.example.zadumite_frontend.ui.signup.SignUpScreen
 import com.example.zadumite_frontend.ui.start_screen.StartScreen
 import com.example.zadumite_frontend.ui.add_word.AddWordScreen
@@ -11,10 +13,21 @@ import com.example.zadumite_frontend.ui.profile.ProfileScreen
 import com.example.zadumite_frontend.ui.scaffold.ZaDumiteScaffold
 import com.example.zadumite_frontend.ui.user_words.UserWordsScreen
 import com.example.zadumite_frontend.ui.word.WordOfTheWeekScreen
+import org.koin.compose.getKoin
 
 @Composable
 fun NavigationStack() {
     val navController = rememberNavController()
+    val logoutNotifier: LogoutNotifier = getKoin().get()
+
+    LaunchedEffect(Unit) {
+        logoutNotifier.logoutFlow.collect {
+            navController.navigate(Screen.Start.route) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = Screen.Start.route
@@ -27,7 +40,7 @@ fun NavigationStack() {
         }
         composable(route = Screen.SignUp.route) {
             SignUpScreen(
-                onNavigateBack = { navController.popBackStack() },
+                onNavigateBack = { navController.navigate(Screen.Start.route) },
                 onNavigateToWordScreen = { navController.navigate(Screen.Word.route) }
             )
         }

@@ -7,7 +7,7 @@ import com.example.zadumite_frontend.data.api.ZaDumiteApiService
 class UserRepository(
     private val apiService: ZaDumiteApiService,
     private val tokenManager: JwtTokenManager
-){
+) {
     suspend fun getUserById(id: Int): User {
         return apiService.getUserById(id)
     }

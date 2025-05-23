@@ -4,6 +4,7 @@ import com.example.zadumite_frontend.data.model.token.JwtTokenManager
 import com.example.zadumite_frontend.data.model.word.Word
 import com.example.zadumite_frontend.data.api.ZaDumiteApiService
 import com.example.zadumite_frontend.utils.token.TokenUtils.decodeUserRoleFromToken
+import retrofit2.Response
 
 class WordRepository(
     private val apiService: ZaDumiteApiService,
