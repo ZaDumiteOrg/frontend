@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.zadumite_frontend"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -132,5 +132,4 @@ dependencies {
 
     // Coroutines Test library for testing suspend functions
     testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-
 }
