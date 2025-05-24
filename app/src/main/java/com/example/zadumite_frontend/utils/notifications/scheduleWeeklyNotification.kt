@@ -15,6 +15,7 @@ fun scheduleWeeklyNotification(context: Context) {
     val testMode = true
 
     val inputData = Data.Builder()
+        .putString("type", "weekly")
         .putString("title", "Дума на седмицата")
         .putString("message", "Узнай думата на седмицата!")
         .build()

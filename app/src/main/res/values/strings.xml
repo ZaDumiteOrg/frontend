@@ -76,4 +76,9 @@
     <string name="notification_channel_id">new_word</string>
     <string name="notification_channel_name">Дума на седмицата</string>
     <string name="notification_channel_description">Известия за думата на седмицата</string>
+    <string name="daily_question_channel_id">daily_question</string>
+    <string name="daily_question_channel_name">Дневен въпрос</string>
+    <string name="daily_question_channel_description">Известия за дневния въпрос</string>
+    <string name="daily_question_notification_title">Дневен въпрос</string>
+    <string name="daily_question_notification_text">Готов ли си за нов въпрос днес?</string>
 </resources>
