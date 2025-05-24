@@ -69,4 +69,6 @@
     <string name="error_access_token_missing">Access token is missing.</string>
     <string name="error_unauthorized_admin_only">Unauthorized: Only admins can add words.</string>
     <string name="error_add_word_failed">Failed to add word: %1$s</string>
+    <string name="daily_question_title">Нов въпрос за деня</string>
+    <string name="daily_question_text">Тествай знанията си с днешния въпрос!</string>
 </resources>
