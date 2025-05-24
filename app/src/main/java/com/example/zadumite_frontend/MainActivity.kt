@@ -13,6 +13,7 @@ import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import com.example.zadumite_frontend.utils.notifications.scheduleWeeklyNotification
 
 class MainActivity : ComponentActivity() {
 
@@ -20,6 +21,7 @@ class MainActivity : ComponentActivity() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show()
+                scheduleWeeklyNotification(applicationContext)
             } else {
                 Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show()
             }
@@ -28,7 +30,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        requestNotificationPermission()
         createNotificationChannel()
 
         setContent {
@@ -37,17 +38,15 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Daily Question"
-            val descriptionText = "Daily popup for new questions"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel("daily_question_channel", name, importance).apply {
-                description = descriptionText
-            }
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+        val name = "Daily Question"
+        val descriptionText = "Daily popup for new questions"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel("daily_question_channel", name, importance).apply {
+            description = descriptionText
         }
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     fun requestNotificationPermission() {

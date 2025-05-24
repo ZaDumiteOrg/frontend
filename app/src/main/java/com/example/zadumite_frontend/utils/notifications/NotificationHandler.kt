@@ -1,5 +1,6 @@
 package com.example.zadumite_frontend.utils.notifications
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
@@ -8,14 +9,27 @@ import kotlin.random.Random
 
 class NotificationHandler(private val context: Context) {
     private val notificationManager = context.getSystemService(NotificationManager::class.java)
-    private val notificationChannelID = "new_word"
+    private val notificationChannelID = context.getString(R.string.notification_channel_id)
 
+    init {
+        createNotificationChannel()
+    }
+
+    private fun createNotificationChannel() {
+        val name = context.getString(R.string.notification_channel_name)
+        val descriptionText = context.getString(R.string.notification_channel_description)
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel = NotificationChannel(notificationChannelID, name, importance).apply {
+            description = descriptionText
+        }
+        notificationManager.createNotificationChannel(channel)
+    }
     fun showWordOfWeekNotification() {
         val notification = NotificationCompat.Builder(context, notificationChannelID)
-            .setContentTitle("Дума на седмицата")
-            .setContentText("Узнай думата на седмицата!")
+            .setContentTitle(context.getString(R.string.notification_title))
+            .setContentText(context.getString(R.string.notification_text))
             .setSmallIcon(R.drawable.notification)
-            .setPriority(NotificationManager.IMPORTANCE_HIGH)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .build()
 
