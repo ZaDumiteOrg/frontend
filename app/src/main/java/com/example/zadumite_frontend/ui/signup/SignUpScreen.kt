@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.zadumite_frontend.MainActivity
 import com.example.zadumite_frontend.R
 import com.example.zadumite_frontend.data.model.user.SignUpRequest
 import com.example.zadumite_frontend.network.monitor.ConnectivityObserver
@@ -196,6 +197,7 @@ fun SignUpScreen(
                                      errorMessage = ""
                                      val user = SignUpRequest(firstName, lastName, email, password)
                                      viewModel.signUp(user, context) {
+                                         (context as? MainActivity)?.requestNotificationPermission()
                                          onNavigateToWordScreen()
                                      }
                                  }

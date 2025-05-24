@@ -28,7 +28,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        requestNotificationPermission()
         createNotificationChannel()
 
         setContent {
@@ -37,17 +36,15 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Daily Question"
-            val descriptionText = "Daily popup for new questions"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel("daily_question_channel", name, importance).apply {
-                description = descriptionText
-            }
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+        val name = "Daily Question"
+        val descriptionText = "Daily popup for new questions"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel("daily_question_channel", name, importance).apply {
+            description = descriptionText
         }
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     fun requestNotificationPermission() {
