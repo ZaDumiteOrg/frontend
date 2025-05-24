@@ -4,9 +4,7 @@ import com.example.zadumite_frontend.data.model.word.Word
 import com.example.zadumite_frontend.domain.FetchUserWordsUseCase
 import com.example.zadumite_frontend.data.api.ZaDumiteApiService
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -31,7 +29,11 @@ class FetchUserWordsUseCaseTest {
         runBlocking {
             val userId = 1
             val expectedWords = listOf(
-                Word(word = "one", description = "example description", example = "exmaple example"),
+                Word(
+                    word = "one",
+                    description = "example description",
+                    example = "exmaple example"
+                ),
                 Word(word = "two", description = "example description", example = "exmaple example")
             )
 
@@ -40,23 +42,24 @@ class FetchUserWordsUseCaseTest {
 
             val result = fetchUserWordsUseCase()
 
-            assertEquals(expectedWords, result)
+            assertTrue(result.isSuccess)
+            assertEquals(expectedWords, result.getOrNull())
             verify(tokenManager).getUserId()
             verify(apiService).getUserWords(userId)
         }
     }
 
     @Test
-    fun `invoke should return failure when userId is null`() = runTest {
-        whenever(tokenManager.getUserId()).thenReturn(null)
+    fun `invoke should return failure when userId is null`() {
+        runBlocking {
+            whenever(tokenManager.getUserId()).thenReturn(null)
 
-        val result = fetchUserWordsUseCase()
+            val result = fetchUserWordsUseCase()
 
-        assertTrue(result.isFailure)
-        assertEquals("User ID not found", result.exceptionOrNull()?.message)
-
-        verify(tokenManager).getUserId()
-
-        verify(apiService, never()).getUserWords(any())
+            assertTrue(result.isFailure)
+            assertEquals("User ID not found", result.exceptionOrNull()?.message)
+            verify(tokenManager).getUserId()
+            verify(apiService, never()).getUserWords(any())
+        }
     }
 }

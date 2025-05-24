@@ -11,12 +11,9 @@ import org.junit.Test
 import org.mockito.kotlin.*
 
 class GetUserUseCaseTest {
-
-    // Mock dependencies
     private lateinit var userRepository: UserRepository
     private lateinit var tokenManager: JwtTokenManager
 
-    // System under test
     private lateinit var getUserUseCase: GetUserUseCase
 
     @Before
