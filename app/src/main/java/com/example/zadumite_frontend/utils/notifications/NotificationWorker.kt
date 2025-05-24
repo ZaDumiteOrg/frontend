@@ -10,9 +10,22 @@ class NotificationWorker(
     workerParams: WorkerParameters,
 ) :  CoroutineWorker(context, workerParams) {
     override suspend fun doWork(): Result {
-        Log.d("NotificationWorker", "Showing notification")
+
+        val type = inputData.getString("type")
+
         val notificationHandler = NotificationHandler(applicationContext)
-        notificationHandler.showWordOfWeekNotification()
+
+        when (type) {
+            "daily" -> {
+                notificationHandler.showDailyQuestionNotification()
+            }
+            "weekly" -> {
+                notificationHandler.showWordOfWeekNotification()
+            }
+            else -> Log.w("NotificationWorker", "Unknown notification type")
+        }
+
         return Result.success()
     }
+
 }

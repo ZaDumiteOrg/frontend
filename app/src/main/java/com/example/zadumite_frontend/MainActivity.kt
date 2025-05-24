@@ -13,6 +13,7 @@ import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import com.example.zadumite_frontend.utils.notifications.scheduleDailyNotification
 import com.example.zadumite_frontend.utils.notifications.scheduleWeeklyNotification
 
 class MainActivity : ComponentActivity() {
@@ -22,6 +23,7 @@ class MainActivity : ComponentActivity() {
             if (isGranted) {
                 Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show()
                 scheduleWeeklyNotification(applicationContext)
+                scheduleDailyNotification(applicationContext)
             } else {
                 Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show()
             }
@@ -55,11 +57,18 @@ class MainActivity : ComponentActivity() {
                 == PackageManager.PERMISSION_GRANTED
             ) {
                 Toast.makeText(this, "Notification permission already granted", Toast.LENGTH_SHORT).show()
+
+                scheduleWeeklyNotification(applicationContext)
+                scheduleDailyNotification(applicationContext)
             } else {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         } else {
             Toast.makeText(this, "Notification permission not required for this Android version", Toast.LENGTH_SHORT).show()
+
+            scheduleWeeklyNotification(applicationContext)
+            scheduleDailyNotification(applicationContext)
         }
     }
+
 }

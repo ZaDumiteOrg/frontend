@@ -35,4 +35,27 @@ class NotificationHandler(private val context: Context) {
 
         notificationManager.notify(Random.nextInt(), notification)
     }
+
+    fun showDailyQuestionNotification() {
+        val channelId = context.getString(R.string.daily_question_channel_id)
+
+        val name = context.getString(R.string.daily_question_channel_name)
+        val descriptionText = context.getString(R.string.daily_question_channel_description)
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel = NotificationChannel(channelId, name, importance).apply {
+            description = descriptionText
+        }
+        notificationManager.createNotificationChannel(channel)
+
+        val notification = NotificationCompat.Builder(context, channelId)
+            .setContentTitle(context.getString(R.string.daily_question_notification_title))
+            .setContentText(context.getString(R.string.daily_question_notification_text))
+            .setSmallIcon(R.drawable.notification)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .build()
+
+        notificationManager.notify(Random.nextInt(), notification)
+    }
+
 }
