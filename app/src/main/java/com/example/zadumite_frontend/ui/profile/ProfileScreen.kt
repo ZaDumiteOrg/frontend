@@ -48,6 +48,7 @@ fun ProfileScreen(
     val errorMessage by viewModel.errorMessage
     val networkStatus by networkViewModel.networkStatus.collectAsState()
     val isNetworkAvailable = networkStatus == ConnectivityObserver.Status.Available
+    val userScore by viewModel.userScore
     var showDialog by remember { mutableStateOf(false) }
 
 
@@ -122,6 +123,15 @@ fun ProfileScreen(
                         label = stringResource(R.string.password),
                         isReadOnly = true
                     )
+
+                    if (userScore != null) {
+                        CustomOutlinedTextField(
+                            value = userScore.toString(),
+                            onValueChange = {},
+                            label = stringResource(R.string.total_score),
+                            isReadOnly = true
+                        )
+                    }
 
                     CustomButton(
                         text = stringResource(R.string.logout),

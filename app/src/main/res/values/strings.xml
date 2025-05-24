@@ -69,4 +69,6 @@
     <string name="error_access_token_missing">Access token is missing.</string>
     <string name="error_unauthorized_admin_only">Unauthorized: Only admins can add words.</string>
     <string name="error_add_word_failed">Failed to add word: %1$s</string>
+    <string name="total_score">Брой точки</string>
+    <string name="failed_fetching_score">Failed to fetch user score</string>
 </resources>
