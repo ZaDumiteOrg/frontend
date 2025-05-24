@@ -193,6 +193,7 @@ fun LogInScreen(
                                         errorMessage = context.getString(R.string.login_failed)
                                     } else {
                                         userRole = role
+                                        (context as? MainActivity)?.requestNotificationPermission()
                                     }
                                 }
                             }

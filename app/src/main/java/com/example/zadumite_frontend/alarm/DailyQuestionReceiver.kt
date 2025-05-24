@@ -38,8 +38,8 @@ class DailyQuestionReceiver : BroadcastReceiver() {
 
         val notification = NotificationCompat.Builder(context, "daily_question_channel")
             .setSmallIcon(R.drawable.notification)
-            .setContentTitle("Нов въпрос за деня")
-            .setContentText("Тествай знанията си с днешния въпрос!")
+            .setContentTitle(context.getString(R.string.daily_question_title))
+            .setContentText(context.getString(R.string.daily_question_text))
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()

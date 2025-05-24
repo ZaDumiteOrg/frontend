@@ -5,16 +5,26 @@ import com.example.zadumite_frontend.data.model.question.Question
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.*
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.zadumite_frontend.data.model.question.UserAnswerRequest
 import com.example.zadumite_frontend.data.model.question.UserQuestion
 import com.example.zadumite_frontend.domain.FetchDailyQuestionUseCase
 import com.example.zadumite_frontend.domain.GetUserUseCase
 import com.example.zadumite_frontend.domain.SubmitUserAnswerUseCase
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import kotlinx.coroutines.flow.first
+
 
 class DailyQuestionViewModel(
     private val fetchDailyQuestionUseCase: FetchDailyQuestionUseCase,
     private val submitUserAnswerUseCase: SubmitUserAnswerUseCase,
     private val getUserUseCase: GetUserUseCase,
+    private val dataStore: DataStore<Preferences>,
 ): ViewModel() {
     private val _questionState = mutableStateOf<Question?>(null)
     val question: State<Question?> = _questionState
@@ -27,6 +37,30 @@ class DailyQuestionViewModel(
 
     private val _error = mutableStateOf<String?>(null)
     val error: State<String?> = _error
+
+    private val key = stringPreferencesKey("last_daily_question_date")
+    private val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
+    fun hasShownToday(onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val prefs = dataStore.data.first()
+                val lastShown = prefs[key]
+                onResult(lastShown == today)
+            } catch (e: Exception) {
+                onResult(false)             }
+        }
+    }
+
+    fun markAsShownToday() {
+        viewModelScope.launch {
+            try {
+                dataStore.edit { prefs ->
+                    prefs[key] = today
+                }
+            } catch (_: Exception) {}
+        }
+    }
 
     fun loadDailyQuestion() {
         _isLoading.value = true
