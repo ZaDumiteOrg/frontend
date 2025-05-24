@@ -1,5 +1,8 @@
 package com.example.zadumite_frontend.data.api
 
+import com.example.zadumite_frontend.data.model.question.Question
+import com.example.zadumite_frontend.data.model.question.UserAnswerRequest
+import com.example.zadumite_frontend.data.model.question.UserQuestion
 import com.example.zadumite_frontend.data.model.token.TokenResponse
 import com.example.zadumite_frontend.data.model.user.LogInRequest
 import com.example.zadumite_frontend.data.model.user.SignUpRequest
@@ -28,6 +31,18 @@ interface ZaDumiteApiService {
     @GET("user/{id}")
     suspend fun getUserById(@Path("id") userId: Int): User
 
+    @GET("user")
+    suspend fun getAllUsers(): Response<List<User>>
+
     @POST("word")
     suspend fun addWord(@Body request: Word): Response<Word>
+
+    @GET("question/daily")
+    suspend fun getDailyQuestion(): Response<Question>
+
+    @POST("user-questions")
+    suspend fun submitUserAnswer(@Body request: UserAnswerRequest): Response<UserQuestion>
+
+    @GET("user-questions/score/{userId}")
+    suspend fun getUserScore(@Path("userId") userId: Int): Response<Int>
 }

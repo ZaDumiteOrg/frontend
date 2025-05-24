@@ -1,12 +1,10 @@
 package com.example.zadumite_frontend.ui.user_words
 
-import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.zadumite_frontend.data.model.word.Word
 import androidx.lifecycle.viewModelScope
-import com.example.zadumite_frontend.R
 import com.example.zadumite_frontend.domain.FetchUserWordsUseCase
 import kotlinx.coroutines.launch
 

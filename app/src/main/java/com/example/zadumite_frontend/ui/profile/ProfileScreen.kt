@@ -6,11 +6,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,6 +28,9 @@ import com.example.zadumite_frontend.network.monitor.NetworkViewModel
 import com.example.zadumite_frontend.ui.custom_elements.CustomButton
 import com.example.zadumite_frontend.ui.custom_elements.CustomOutlinedTextField
 import com.example.zadumite_frontend.ui.custom_elements.CustomProgressIndicator
+import com.example.zadumite_frontend.ui.theme.Beige
+import com.example.zadumite_frontend.ui.theme.Brown
+import com.example.zadumite_frontend.ui.theme.LightBrown
 import com.example.zadumite_frontend.ui.theme.Red
 import com.example.zadumite_frontend.ui.theme.errorMessageStyle
 import com.example.zadumite_frontend.ui.theme.myProfile
@@ -40,6 +48,9 @@ fun ProfileScreen(
     val errorMessage by viewModel.errorMessage
     val networkStatus by networkViewModel.networkStatus.collectAsState()
     val isNetworkAvailable = networkStatus == ConnectivityObserver.Status.Available
+    val userScore by viewModel.userScore
+    var showDialog by remember { mutableStateOf(false) }
+
 
     LaunchedEffect(Unit) {
         viewModel.fetchUserDetails(context)
@@ -113,15 +124,53 @@ fun ProfileScreen(
                         isReadOnly = true
                     )
 
+                    if (userScore != null) {
+                        CustomOutlinedTextField(
+                            value = userScore.toString(),
+                            onValueChange = {},
+                            label = stringResource(R.string.total_score),
+                            isReadOnly = true
+                        )
+                    }
+
                     CustomButton(
                         text = stringResource(R.string.logout),
                         isEnabled = isNetworkAvailable,
                         onClick = {
-                            viewModel.logout {
-                                onNavigateToStartPage()
-                            }
+                            showDialog = true
                         }
                     )
+
+                    if (showDialog) {
+                        AlertDialog(
+                            onDismissRequest = { showDialog = false },
+                            title = { Text(stringResource(R.string.logout_alert_title)) },
+                            text = { Text(stringResource(R.string.logout_confirm)) },
+                            confirmButton = {
+                                CustomButton(
+                                    text = stringResource(R.string.yes),
+                                    isEnabled = isNetworkAvailable,
+                                    onClick = {
+                                        showDialog = false
+                                        viewModel.logout {
+                                            onNavigateToStartPage()
+                                        }
+                                    }
+                                )
+                            },
+                            dismissButton = {
+                                CustomButton(
+                                    text = stringResource(R.string.no),
+                                    isEnabled = isNetworkAvailable,
+                                    onClick = { showDialog = false }
+                                )
+                            },
+                            shape = RoundedCornerShape(16.dp),
+                            containerColor = Beige,
+                            titleContentColor = Brown,
+                            textContentColor = LightBrown
+                        )
+                    }
                 }
             }
         }
