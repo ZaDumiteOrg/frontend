@@ -51,9 +51,11 @@ fun WordOfTheWeekScreen(
             val now = Calendar.getInstance()
             val currentHour = now.get(Calendar.HOUR_OF_DAY)
 
-            if (currentHour >= 10 && !hasShownToday.value) {
-                dailyQuestionViewModel.loadDailyQuestion()
-                hasShownToday.value = true
+            dailyQuestionViewModel.hasShownToday { wasShown ->
+                if (!wasShown && currentHour >= 10) {
+                    dailyQuestionViewModel.loadDailyQuestion()
+                }
+                hasShownToday.value = wasShown
             }
         }
     }
@@ -66,9 +68,13 @@ fun WordOfTheWeekScreen(
         ) {
             DailyQuestionPopup(
                 dailyQuestion = question!!,
-                onDismiss = { hasShownToday.value = true },
+                onDismiss = {
+                    dailyQuestionViewModel.markAsShownToday()
+                    hasShownToday.value = true
+                },
                 onAnswerSubmit = { selected ->
                     dailyQuestionViewModel.submitAnswer(selected)
+                    dailyQuestionViewModel.markAsShownToday()
                     hasShownToday.value = true
                 }
             )

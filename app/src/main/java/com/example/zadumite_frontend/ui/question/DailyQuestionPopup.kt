@@ -36,7 +36,7 @@ fun DailyQuestionPopup(
 ) {
     var selectedOption by remember { mutableStateOf<String?>(null) }
     val hasSubmitted by remember { mutableStateOf(false) }
-    val isCorrect by remember { mutableStateOf<Boolean?>(null) }
+    var isCorrect by remember { mutableStateOf<Boolean?>(null) }
 
 
     AlertDialog(
@@ -96,8 +96,8 @@ fun DailyQuestionPopup(
             Button(
                 onClick = {
                     selectedOption?.let {
+                        isCorrect = it == dailyQuestion.correctOption
                         onAnswerSubmit(it)
-                        onDismiss()
                     }
                 },
                 enabled = selectedOption != null,
