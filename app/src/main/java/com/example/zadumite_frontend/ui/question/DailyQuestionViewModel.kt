@@ -48,8 +48,9 @@ class DailyQuestionViewModel(
                 val lastShown = prefs[key]
                 onResult(lastShown == today)
             } catch (e: Exception) {
-                onResult(false)             }
-        }
+               onResult(false)             }
+       }
+            //onResult(false)
     }
 
     fun markAsShownToday() {
