@@ -15,7 +15,7 @@ val viewModelModule = module {
     viewModel { LogInViewModel(get()) }
     viewModel { WordViewModel(get()) }
     viewModel { UserWordsViewModel(get()) }
-    viewModel { AddWordViewModel(get()) }
+    viewModel { AddWordViewModel(get(), get()) }
     viewModel { NetworkViewModel(get()) }
     viewModel { ProfileViewModel(get(), get(), get()) }
     viewModel { DailyQuestionViewModel(get(), get(), get()) }
