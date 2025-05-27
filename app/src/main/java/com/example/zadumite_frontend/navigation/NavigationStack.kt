@@ -40,20 +40,26 @@ fun NavigationStack() {
         }
         composable(route = Screen.SignUp.route) {
             SignUpScreen(
-                onNavigateBack = { navController.navigate(Screen.Start.route) },
+                onNavigateBack = { navController.navigate(Screen.Start.route){
+                    popUpTo(0) { inclusive = true }
+                } },
                 onNavigateToWordScreen = { navController.navigate(Screen.Word.route) }
             )
         }
         composable(route = Screen.LogIn.route) {
             LogInScreen(
-                onNavigateBack = { navController.navigate(Screen.Start.route) },
+                onNavigateBack = { navController.navigate(Screen.Start.route) {
+                    popUpTo(0) { inclusive = true }
+                } },
                 onNavigateToWordScreen = { navController.navigate(Screen.Word.route) },
                 onNavigateToAddWordScreen = { navController.navigate(Screen.AddWord.route) }
             )
         }
         composable(route = Screen.AddWord.route) {
             AddWordScreen(
-                onNavigateBack = { navController.navigate(Screen.LogIn.route) }
+                onNavigateBack = { navController.navigate(Screen.Start.route) {
+                    popUpTo(0) { inclusive = true }
+                } }
             )
         }
         composable(route = Screen.Word.route) {
@@ -137,7 +143,9 @@ fun NavigationStack() {
                 }
             } else {
                 ProfileScreen(
-                    onNavigateToStartPage = { navController.navigate(Screen.Start.route) }
+                    onNavigateToStartPage = { navController.navigate(Screen.Start.route){
+                        popUpTo(0) { inclusive = true }
+                    } }
                 )
             }
         }

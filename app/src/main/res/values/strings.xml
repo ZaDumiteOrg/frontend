@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ZaDumite-frontend</string>
+    <string name="app_name">За думите</string>
     <string name="app_title">За думите</string>
     <string name="login">Влизане</string>
     <string name="signup">Регистрация</string>
@@ -71,4 +71,16 @@
     <string name="error_add_word_failed">Failed to add word: %1$s</string>
     <string name="daily_question_title">Нов въпрос за деня</string>
     <string name="daily_question_text">Тествай знанията си с днешния въпрос!</string>
+    <string name="total_score">Брой точки</string>
+    <string name="failed_fetching_score">Failed to fetch user score</string>
+    <string name="notification_title">Дума на седмицата</string>
+    <string name="notification_text">Узнай думата на седмицата!</string>
+    <string name="notification_channel_id">new_word</string>
+    <string name="notification_channel_name">Дума на седмицата</string>
+    <string name="notification_channel_description">Известия за думата на седмицата</string>
+    <string name="daily_question_channel_id">daily_question</string>
+    <string name="daily_question_channel_name">Дневен въпрос</string>
+    <string name="daily_question_channel_description">Известия за дневния въпрос</string>
+    <string name="daily_question_notification_title">Дневен въпрос</string>
+    <string name="daily_question_notification_text">Готов ли си за нов въпрос днес?</string>
 </resources>

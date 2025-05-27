@@ -30,9 +30,11 @@ import com.example.zadumite_frontend.ui.theme.White
 import com.example.zadumite_frontend.ui.theme.errorMessageStyle
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
@@ -41,6 +43,7 @@ import com.example.zadumite_frontend.network.monitor.ConnectivityObserver
 import com.example.zadumite_frontend.network.monitor.NetworkViewModel
 import com.example.zadumite_frontend.ui.custom_elements.CustomButton
 import com.example.zadumite_frontend.ui.custom_elements.CustomOutlinedTextField
+import com.example.zadumite_frontend.ui.theme.Beige
 import com.example.zadumite_frontend.ui.theme.Brown
 import com.example.zadumite_frontend.ui.theme.Red
 
@@ -69,7 +72,7 @@ fun AddWordScreen(
     var errorMessage by remember {
         mutableStateOf("")
     }
-
+    var showDialog by remember { mutableStateOf(false) }
     val addWordResult by viewModel.addWordState
     val isLoading by viewModel.isLoading
     val context = LocalContext.current
@@ -96,7 +99,9 @@ fun AddWordScreen(
                     .padding(bottom = 16.dp)
             ) {
                 IconButton(
-                    onClick = onNavigateBack,
+                    onClick = {
+                              showDialog = true
+                    },
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -104,6 +109,37 @@ fun AddWordScreen(
                         tint = Brown
                     )
                 }
+            }
+
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDialog = false },
+                    title = { Text(stringResource(R.string.logout_alert_title)) },
+                    text = { Text(stringResource(R.string.logout_confirm)) },
+                    confirmButton = {
+                        CustomButton(
+                            text = stringResource(R.string.yes),
+                            isEnabled = isNetworkAvailable,
+                            onClick = {
+                                showDialog = false
+                                viewModel.logout {
+                                    onNavigateBack()
+                                }
+                            }
+                        )
+                    },
+                    dismissButton = {
+                        CustomButton(
+                            text = stringResource(R.string.no),
+                            isEnabled = isNetworkAvailable,
+                            onClick = { showDialog = false }
+                        )
+                    },
+                    shape = RoundedCornerShape(16.dp),
+                    containerColor = Beige,
+                    titleContentColor = Brown,
+                    textContentColor = LightBrown
+                )
             }
 
             if (!isNetworkAvailable) {
