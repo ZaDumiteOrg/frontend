@@ -17,7 +17,10 @@ class AuthAuthenticator(
     override fun authenticate(route: Route?, response: Response): Request? {
         return runBlocking {
             val refreshToken = tokenManager.getRefreshJwt()
-            if (refreshToken.isNullOrEmpty()) return@runBlocking null
+            if (refreshToken.isNullOrEmpty()) {
+                sessionManager.logout()
+                return@runBlocking null
+            }
 
             val newTokenResponse = refreshTokenHandler.refreshAccessToken(refreshToken)
             if (newTokenResponse != null) {
